@@ -5,20 +5,18 @@
 //  Created by Adriano Oliviero on 27/03/26.
 //
 
-import SpriteKit
 import GameplayKit
+import SpriteKit
 
 class GameScene: SKScene {
-    
     var entities = [GKEntity]()
-    var graphs = [String : GKGraph]()
+    var graphs = [String: GKGraph]()
     
-    private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    private var lastUpdateTime: TimeInterval = 0
+    private var label: SKLabelNode?
+    private var spinnyNode: SKShapeNode?
     
     override func sceneDidLoad() {
-        
         self.lastUpdateTime = 0
         
         // Get label node from scene and store it for use later
@@ -30,7 +28,7 @@ class GameScene: SKScene {
         
         // Create shape node to use during mouse interaction
         let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        self.spinnyNode = SKShapeNode(rectOf: CGSize(width: w, height: w), cornerRadius: w * 0.3)
         
         if let spinnyNode = self.spinnyNode {
             spinnyNode.lineWidth = 2.5
@@ -42,60 +40,46 @@ class GameScene: SKScene {
         }
     }
     
-    
-    func touchDown(atPoint pos : CGPoint) {
+    override func mouseDown(with event: NSEvent) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
+            n.position = event.location(in: self)
             n.strokeColor = SKColor.green
             self.addChild(n)
         }
     }
     
-    func touchMoved(toPoint pos : CGPoint) {
+    override func mouseDragged(with event: NSEvent) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
+            n.position = event.location(in: self)
             n.strokeColor = SKColor.blue
             self.addChild(n)
         }
     }
     
-    func touchUp(atPoint pos : CGPoint) {
+    override func mouseUp(with event: NSEvent) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
+            n.position = event.location(in: self)
             n.strokeColor = SKColor.red
             self.addChild(n)
         }
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        self.touchDown(atPoint: event.location(in: self))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.touchUp(atPoint: event.location(in: self))
     }
     
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
         case 0x31:
             if let label = self.label {
-                label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+                label.run(SKAction(named: "Pulse")!, withKey: "fadeInOut")
             }
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
     }
     
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
         // Initialize _lastUpdateTime if it has not already been
-        if (self.lastUpdateTime == 0) {
+        if self.lastUpdateTime == 0 {
             self.lastUpdateTime = currentTime
         }
         
