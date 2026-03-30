@@ -10,20 +10,20 @@ import GameplayKit
 import SpriteKit
 
 class Player: GKEntity {
-    var position: CGPoint = .init(x: 0, y: 0)
-    var spriteComponent: SpriteComponent?
+    var spriteComponent = SpriteComponent(
+        texture: SKTexture(imageNamed: "player")
+    )
     var moving: Bool = false
     var direction: Int = 0
 
     init(imageName: String) {
         super.init()
 
-        let component = SpriteComponent(
-            texture: SKTexture(imageNamed: "player")
-        )
-        self.spriteComponent = component
+        //        self.spriteComponent =
 
-        addComponent(spriteComponent!)
+        self.spriteComponent.node.zRotation = CGFloat.pi / 2
+        addComponent(self.spriteComponent)
+
     }
 
     @available(*, unavailable)
@@ -39,29 +39,13 @@ class Player: GKEntity {
         if moving == true {
             switch direction {
             case 1:
-                let currentPosition = spriteComponent?.node.position
-                spriteComponent?.node.position = CGPoint(
-                    x: currentPosition!.x,
-                    y: currentPosition!.y + 5
-                )
+                spriteComponent.node.position.y += 5
             case 2:
-                let currentPosition = spriteComponent?.node.position
-                spriteComponent?.node.position = CGPoint(
-                    x: currentPosition!.x - 5,
-                    y: currentPosition!.y
-                )
+                spriteComponent.node.position.x -= 5
             case 3:
-                let currentPosition = spriteComponent?.node.position
-                spriteComponent?.node.position = CGPoint(
-                    x: currentPosition!.x,
-                    y: currentPosition!.y - 5
-                )
+                spriteComponent.node.position.y -= 5
             case 4:
-                let currentPosition = spriteComponent?.node.position
-                spriteComponent?.node.position = CGPoint(
-                    x: currentPosition!.x + 5,
-                    y: currentPosition!.y
-                )
+                spriteComponent.node.position.x += 5
             default:
                 break
             }

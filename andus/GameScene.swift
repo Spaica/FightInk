@@ -55,12 +55,9 @@ class GameScene: SKScene {
         self.lastUpdateTime = currentTime
     }
 
-    //    override func mouseDown(with event: NSEvent) {
-    //    }
-    //    override func mouseDragged(with event: NSEvent) {
-    //    }
-    //    override func mouseUp(with event: NSEvent) {
-    //    }
+    //    override func mouseDown(with event: NSEvent) {}
+    //    override func mouseDragged(with event: NSEvent) {}
+    //    override func mouseUp(with event: NSEvent) {}
 
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
@@ -77,7 +74,7 @@ class GameScene: SKScene {
             self.playerEntity?.direction = 4
             self.playerEntity?.moving = true
         default:
-            self.playerEntity?.moving = false
+            break
         }
     }
 
@@ -86,7 +83,7 @@ class GameScene: SKScene {
         case 0x0d, 0x00, 0x01, 0x02:
             self.playerEntity?.moving = false
         default:
-            self.playerEntity?.moving = true
+            break
         }
     }
 }
