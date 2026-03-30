@@ -62,17 +62,13 @@ class GameScene: SKScene {
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
         case 0x0d:
-            self.playerEntity?.direction = 1
-            self.playerEntity?.moving = true
+            self.playerEntity?.moving.w = true
         case 0x00:
-            self.playerEntity?.direction = 2
-            self.playerEntity?.moving = true
+            self.playerEntity?.moving.a = true
         case 0x01:
-            self.playerEntity?.direction = 3
-            self.playerEntity?.moving = true
+            self.playerEntity?.moving.s = true
         case 0x02:
-            self.playerEntity?.direction = 4
-            self.playerEntity?.moving = true
+            self.playerEntity?.moving.d = true
         default:
             break
         }
@@ -80,8 +76,14 @@ class GameScene: SKScene {
 
     override func keyUp(with event: NSEvent) {
         switch event.keyCode {
-        case 0x0d, 0x00, 0x01, 0x02:
-            self.playerEntity?.moving = false
+        case 0x0d:
+            self.playerEntity?.moving.w = false
+        case 0x00:
+            self.playerEntity?.moving.a = false
+        case 0x01:
+            self.playerEntity?.moving.s = false
+        case 0x02:
+            self.playerEntity?.moving.d = false
         default:
             break
         }

@@ -13,8 +13,7 @@ class Player: GKEntity {
     var spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "player")
     )
-    var moving: Bool = false
-    var direction: Int = 0
+    var moving = (w: false, a: false, s: false, d: false)
 
     init(imageName: String) {
         super.init()
@@ -33,14 +32,10 @@ class Player: GKEntity {
     }
 
     func move(deltaTime seconds: TimeInterval) {
-        let speed: CGFloat = 3000 * seconds
-        if moving == true {
-            if let body = self.spriteComponent.node.physicsBody {
-                body.velocity.dx +=
-                    direction == 4 ? speed : direction == 2 ? -speed : 0
-                body.velocity.dy +=
-                    direction == 1 ? speed : direction == 3 ? -speed : 0
-            }
+        if let body = self.spriteComponent.node.physicsBody {
+            let speed: CGFloat = 5000 * seconds
+            body.velocity.dx += (moving.d ? speed : 0) + (moving.a ? -speed : 0)
+            body.velocity.dy += (moving.w ? speed : 0) + (moving.s ? -speed : 0)
         }
     }
 }
