@@ -18,9 +18,6 @@ class Player: GKEntity {
 
     init(imageName: String) {
         super.init()
-
-        //        self.spriteComponent =
-
         self.spriteComponent.node.zRotation = CGFloat.pi / 2
         addComponent(self.spriteComponent)
 
@@ -32,22 +29,17 @@ class Player: GKEntity {
     }
 
     override func update(deltaTime seconds: TimeInterval) {
-        move()
+        move(deltaTime: seconds)
     }
 
-    func move() {
+    func move(deltaTime seconds: TimeInterval) {
+        let speed: CGFloat = 3000 * seconds
         if moving == true {
-            switch direction {
-            case 1:
-                spriteComponent.node.position.y += 5
-            case 2:
-                spriteComponent.node.position.x -= 5
-            case 3:
-                spriteComponent.node.position.y -= 5
-            case 4:
-                spriteComponent.node.position.x += 5
-            default:
-                break
+            if let body = self.spriteComponent.node.physicsBody {
+                body.velocity.dx +=
+                    direction == 4 ? speed : direction == 2 ? -speed : 0
+                body.velocity.dy +=
+                    direction == 1 ? speed : direction == 3 ? -speed : 0
             }
         }
     }

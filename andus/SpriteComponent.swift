@@ -18,6 +18,9 @@ class SpriteComponent: GKComponent {
             color: .white,
             size: texture.size()
         )
+        node.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
+        node.physicsBody?.affectedByGravity = false
+        node.physicsBody?.linearDamping = 5
         super.init()
     }
 
