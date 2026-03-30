@@ -6,26 +6,23 @@
 //
 
 import Foundation
-import SpriteKit
 import GameplayKit
+import SpriteKit
 
 class Player: GKEntity {
-    var position: CGPoint = CGPoint(x: 0, y: 0)
+    var position: CGPoint = .init(x: 0, y: 0)
 
-  init(imageName: String) {
-    super.init()
+    init(imageName: String) {
+        super.init()
 
+        let spriteComponent = SpriteComponent(texture: SKTexture(imageNamed: "player"))
+        addComponent(spriteComponent)
+    }
 
-    let spriteComponent = SpriteComponent(texture: SKTexture(imageNamed: "player"))
-    addComponent(spriteComponent)
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-    
-    func move ()
-    
-    
-    
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func move() {}
 }
