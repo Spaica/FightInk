@@ -13,16 +13,21 @@ class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
     var spriteComponent: SpriteComponent?
-
+    var moving: Bool = false
+    
     private var lastUpdateTime: TimeInterval = 0
-
+    
+    
+    
     override func sceneDidLoad() {
         self.lastUpdateTime = 0
+        
+        
     }
 
     override func didMove(to view: SKView) {
-        self.entityManager = EntityManager(scene: self)
-
+        entityManager = EntityManager(scene: self)
+        
         let player = Player(imageName: "player")
         self.playerEntity = player
 
@@ -49,24 +54,51 @@ class GameScene: SKScene {
         }
 
         self.lastUpdateTime = currentTime
+        
+        self.playerEntity?.move()
     }
-
-//    override func mouseDown(with event: NSEvent) {
-//    }
-//
-//    override func mouseDragged(with event: NSEvent) {
-//    }
-//
-//    override func mouseUp(with event: NSEvent) {
-//    }
-//
+    
+    //    override func mouseDown(with event: NSEvent) {
+    //
+    //    }
+    //
+    //    override func mouseDragged(with event: NSEvent) {
+    //
+    //    }
+    //
+    //    override func mouseUp(with event: NSEvent) {
+    //
+    //    }
+    //
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
-        case 0xD:
-            let currentPosition = self.spriteComponent?.node.position
-            self.spriteComponent?.node.position = CGPoint(x: currentPosition!.x, y: currentPosition!.y + 5)
+        case 0x0D:
+            self.playerEntity?.direction = 1
+            self.playerEntity?.moving = true
+        case 0x00:
+            self.playerEntity?.direction = 2
+            self.playerEntity?.moving = true
+        case 0x01:
+            self.playerEntity?.direction = 3
+            self.playerEntity?.moving = true
+        case 0x02:
+            self.playerEntity?.direction = 4
+            self.playerEntity?.moving = true
         default:
-            print("ciao")
+            self.playerEntity?.moving = false
         }
+        
+        
+        
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        switch event.keyCode{
+        case 0x0D, 0x00, 0x01, 0x02:
+            self.playerEntity?.moving = false
+        default :
+            self.playerEntity?.moving = true
+        }
+        
     }
 }
