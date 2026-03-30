@@ -12,7 +12,6 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
-    var spriteComponent: SpriteComponent?
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -21,22 +20,17 @@ class GameScene: SKScene {
     }
 
     override func didMove(to view: SKView) {
+        backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
 
         self.playerEntity = Player(imageName: "player")
-
         if let player = self.playerEntity {
             if let component = player.component(ofType: SpriteComponent.self) {
-                self.spriteComponent = component
-                self.spriteComponent?.node.position = CGPoint(
+                component.node.position = CGPoint(
                     x: self.frame.midX,
                     y: self.frame.midY
                 )
-                self.spriteComponent?.node.zPosition = 10
             }
-
-            backgroundColor = SKColor.darkGray
-
             self.entityManager.add(player)
         }
     }

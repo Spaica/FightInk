@@ -18,8 +18,12 @@ class Player: GKEntity {
     init(imageName: String) {
         super.init()
         self.spriteComponent.node.zRotation = CGFloat.pi / 2
+        self.spriteComponent.node.physicsBody = SKPhysicsBody(
+            rectangleOf: self.spriteComponent.node.texture?.size() ?? .zero
+        )
+        self.spriteComponent.node.physicsBody?.affectedByGravity = false
+        self.spriteComponent.node.physicsBody?.linearDamping = 5
         addComponent(self.spriteComponent)
-
     }
 
     @available(*, unavailable)
