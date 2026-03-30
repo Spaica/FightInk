@@ -12,16 +12,25 @@ import SwiftUI
 struct AndusApp: App {
     var body: some Scene {
         WindowGroup {
-            GeometryReader { g in
-                SpriteView(
-                    scene: {
-                        let s = GameScene()
-                        s.size = g.size
-                        s.scaleMode = .resizeFill
-                        return s
-                    }(),
-                    debugOptions: [.showsFPS, .showsNodeCount]
-                )
+            ZStack {
+                GeometryReader { g in
+                    SpriteView(
+                        scene: {
+                            let s = GameScene()
+                            s.size = g.size
+                            s.scaleMode = .resizeFill
+                            return s
+                        }(),
+                        debugOptions: [.showsFPS, .showsNodeCount]
+                    )
+                }
+                //                VStack {
+                //                    Button {
+                //                        print("Hello, World!")
+                //                    } label: {
+                //                        Text("Hello, World!")
+                //                    }.buttonStyle(.glassProminent)
+                //                }
             }
         }
     }
