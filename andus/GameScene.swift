@@ -5,74 +5,41 @@
 //  Created by Adriano Oliviero on 27/03/26.
 //
 
+import Foundation
 import GameplayKit
 import SpriteKit
 
 class GameScene: SKScene {
-    var entities = [GKEntity]()
-    var graphs = [String: GKGraph]()
+    var entityManager: EntityManager!
+    var playerEntity: Player?
+    var spriteComponent: SpriteComponent?
     
     private var lastUpdateTime: TimeInterval = 0
-    private var label: SKLabelNode?
-    private var spinnyNode: SKShapeNode?
+
+    
     
     override func sceneDidLoad() {
         self.lastUpdateTime = 0
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
+       
+    }
+    
+    override func didMove(to view: SKView) {
+        entityManager = EntityManager(scene: self)
+
+        let player = Player(imageName: "player")
+        self.playerEntity = player
+        
+        if let component = player.component(ofType: SpriteComponent.self) {
+            self.spriteComponent = component
+            spriteComponent?.node.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
+                    spriteComponent?.node.zPosition = 10
         }
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode(rectOf: CGSize(width: w, height: w), cornerRadius: w * 0.3)
+        backgroundColor = SKColor.blue
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = event.location(in: self)
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = event.location(in: self)
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = event.location(in: self)
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
-    override func keyDown(with event: NSEvent) {
-        switch event.keyCode {
-        case 0x31:
-            if let label = self.label {
-                label.run(SKAction(named: "Pulse")!, withKey: "fadeInOut")
-            }
-        default:
-            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
+        entityManager.add(player)
+
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -87,10 +54,37 @@ class GameScene: SKScene {
         let dt = currentTime - self.lastUpdateTime
         
         // Update entities
-        for entity in self.entities {
+        for entity in entityManager.entities {
             entity.update(deltaTime: dt)
         }
         
         self.lastUpdateTime = currentTime
     }
+    
+//    override func mouseDown(with event: NSEvent) {
+//        
+//    }
+//    
+//    override func mouseDragged(with event: NSEvent) {
+//        
+//    }
+//    
+//    override func mouseUp(with event: NSEvent) {
+//        
+//    }
+//    
+    override func keyDown(with event: NSEvent) {
+        switch event.keyCode {
+        case 0xD:
+            let currentPosition = spriteComponent?.node.position
+            spriteComponent?.node.position = CGPoint(x: currentPosition!.x, y: currentPosition!.y + 5)
+        default:
+            print ("ciao")
+            
+        }
+    
+    }
+    
 }
+
+// 0x0 0x1 0x2
