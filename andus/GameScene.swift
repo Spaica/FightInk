@@ -12,6 +12,7 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
+    var background: Background?
     let cameraNode = SKCameraNode()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -23,21 +24,26 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
-        addChild(cameraNode)
-        self.camera = cameraNode
 
-        self.playerEntity = Player(imageName: "player")
+        self.camera = cameraNode
+        addChild(cameraNode)
+        self.background = Background(
+            cameraNode: self.cameraNode,
+            entityManager: self.entityManager
+        )
+        self.entityManager.add(self.background!)
+
+        self.playerEntity = Player()
         guard let player = self.playerEntity else { return }
         if let component = player.component(ofType: SpriteComponent.self) {
             self.cameraNode.constraints = [
                 SKConstraint.distance(
-                    SKRange(constantValue: 20.0),
+                    SKRange(constantValue: 30.0),
                     to: component.node
                 )
             ]
         }
         self.entityManager.add(player)
-
     }
 
     override func update(_ currentTime: TimeInterval) {

@@ -15,14 +15,15 @@ class Player: GKEntity {
     )
     var moving = (w: false, a: false, s: false, d: false)
 
-    init(imageName: String) {
+    override init() {
         super.init()
         self.spriteComponent.node.zRotation = CGFloat.pi / 2
+        self.spriteComponent.node.setScale(0.5)
         self.spriteComponent.node.physicsBody = SKPhysicsBody(
             rectangleOf: self.spriteComponent.node.texture?.size() ?? .zero
         )
         self.spriteComponent.node.physicsBody?.affectedByGravity = false
-        self.spriteComponent.node.physicsBody?.linearDamping = 5
+        self.spriteComponent.node.physicsBody?.linearDamping = 50
         addComponent(self.spriteComponent)
     }
 
@@ -37,7 +38,7 @@ class Player: GKEntity {
 
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
-            let speed: CGFloat = 5000 * seconds
+            let speed: CGFloat = 10000 * seconds
             body.velocity.dx += (moving.d ? speed : 0) + (moving.a ? -speed : 0)
             body.velocity.dy += (moving.w ? speed : 0) + (moving.s ? -speed : 0)
         }
