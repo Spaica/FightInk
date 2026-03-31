@@ -11,12 +11,19 @@ class BGTile: GKEntity {
     var spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "ground")
     )
+
     init(x: CGFloat, y: CGFloat) {
         super.init()
-        self.spriteComponent.node.zRotation = CGFloat.pi / 2
+
+        //        let border = SKShapeNode(rectOf: self.spriteComponent.node.size)
+        //        border.strokeColor = .red
+        //        border.lineWidth = 10
+        //        border.alpha = 1
+        //        self.spriteComponent.node.addChild(border)
+
         self.spriteComponent.node.zPosition = -0.1
-        self.spriteComponent.node.setScale(0.2)
         self.spriteComponent.node.position = CGPoint(x: x, y: y)
+        self.spriteComponent.node.alpha = 0.5
         addComponent(self.spriteComponent)
     }
 

@@ -20,13 +20,13 @@ class Background: GKEntity {
         self.cameraNode = cameraNode
         self.entityManager = entityManager
 
-        self.displaySize = self.cameraNode?.frame.size ?? .zero
+        self.displaySize = self.cameraNode?.scene?.size ?? .zero
         guard let displaySize = self.displaySize else { return }
         // loading the texture to calculate the amount of tiles needed
         let tileSize = BGTile(x: 0, y: 0).spriteComponent.node.frame.size
         self.tileAmount = (
-            x: Int(displaySize.width / tileSize.width) + 1,
-            y: Int(displaySize.height / tileSize.height) + 1
+            x: Int(displaySize.width / tileSize.width) + 2,
+            y: Int(displaySize.height / tileSize.height) + 2
         )
         guard let tileAmount = self.tileAmount else { return }
 
@@ -53,17 +53,32 @@ class Background: GKEntity {
         guard let displaySize = self.displaySize else { return }
         // moving the ground tiles
         for t in self.tileEntities {
-            let node = t.spriteComponent.node
+            let tileNode = t.spriteComponent.node
             let cameraTileDist = (
-                x: abs(node.position.x - cam.position.x),
-                y: abs(node.position.y - cam.position.y)
+                x: abs(tileNode.position.x - cam.position.x) * 1.7,
+                y: abs(tileNode.position.y - cam.position.y) * 1.7
             )
             let maxCTDist = (
-                x: node.size.width + displaySize.width,
-                y: node.size.height + displaySize.height
+                x: tileNode.size.width + displaySize.width,
+                y: tileNode.size.height + displaySize.height
             )
             if cameraTileDist.x > maxCTDist.x {
-                t.spriteComponent.node.position.x = 0
+                if tileNode.position.x > cam.position.x {
+                    tileNode.position.x +=
+                        -(tileNode.size.width * CGFloat(tileAmount!.x))
+                } else {
+                    tileNode.position.x +=
+                        (tileNode.size.width * CGFloat(tileAmount!.x))
+                }
+            }
+            if cameraTileDist.y > maxCTDist.y {
+                if tileNode.position.y > cam.position.y {
+                    tileNode.position.y +=
+                        -(tileNode.size.height * CGFloat(tileAmount!.y))
+                } else {
+                    tileNode.position.y +=
+                        (tileNode.size.height * CGFloat(tileAmount!.y))
+                }
             }
         }
     }

@@ -38,7 +38,7 @@ class Player: GKEntity {
 
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
-            let speed: CGFloat = 10000 * seconds
+            let speed: CGFloat = 50000 * seconds
             body.velocity.dx += (moving.d ? speed : 0) + (moving.a ? -speed : 0)
             body.velocity.dy += (moving.w ? speed : 0) + (moving.s ? -speed : 0)
         }

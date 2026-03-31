@@ -38,7 +38,7 @@ class GameScene: SKScene {
         if let component = player.component(ofType: SpriteComponent.self) {
             self.cameraNode.constraints = [
                 SKConstraint.distance(
-                    SKRange(constantValue: 30.0),
+                    SKRange(constantValue: 10.0),
                     to: component.node
                 )
             ]
