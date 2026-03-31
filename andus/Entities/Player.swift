@@ -39,8 +39,14 @@ class Player: GKEntity {
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
             let speed: CGFloat = 50000 * seconds
-            body.velocity.dx += (moving.d ? speed : 0) + (moving.a ? -speed : 0)
-            body.velocity.dy += (moving.w ? speed : 0) + (moving.s ? -speed : 0)
+            var velocity = CGVector(
+                dx: (moving.d ? speed : 0) + (moving.a ? -speed : 0),
+                dy: (moving.w ? speed : 0) + (moving.s ? -speed : 0)
+            )
+            if (moving.a || moving.d) && (moving.w || moving.s) {
+                velocity *= CGFloat(cos(Float.pi / 4))
+            }
+            body.velocity += velocity
         }
     }
 }
