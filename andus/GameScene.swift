@@ -13,6 +13,7 @@ class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
     var background: Background?
+    var worldBorder: WorldBorderNode?
     let cameraNode = SKCameraNode()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -34,19 +35,24 @@ class GameScene: SKScene {
         self.entityManager.add(self.background!)
 
         self.playerEntity = Player()
-        guard let player = self.playerEntity else { return }
-        if let component = player.component(ofType: SpriteComponent.self) {
+        guard let playerEntity else { return }
+        if let component = playerEntity.component(ofType: SpriteComponent.self)
+        {
             self.cameraNode.constraints = [
                 SKConstraint.distance(
-                    SKRange(constantValue: 10.0),
+                    SKRange(constantValue: 0.0),
                     to: component.node
                 )
             ]
         }
-        self.entityManager.add(player)
+        self.entityManager.add(playerEntity)
+
+        self.worldBorder = WorldBorderNode()
+        addChild(self.worldBorder!)
     }
 
     override func update(_ currentTime: TimeInterval) {
+
         if self.lastUpdateTime == 0 {
             self.lastUpdateTime = currentTime
         }
@@ -64,15 +70,16 @@ class GameScene: SKScene {
     //    override func mouseUp(with event: NSEvent) {}
 
     override func keyDown(with event: NSEvent) {
+        guard let playerEntity else { return }
         switch event.keyCode {
         case 0x0d:
-            self.playerEntity?.moving.w = true
+            playerEntity.moving.w = true
         case 0x00:
-            self.playerEntity?.moving.a = true
+            playerEntity.moving.a = true
         case 0x01:
-            self.playerEntity?.moving.s = true
+            playerEntity.moving.s = true
         case 0x02:
-            self.playerEntity?.moving.d = true
+            playerEntity.moving.d = true
         default:
             break
         }

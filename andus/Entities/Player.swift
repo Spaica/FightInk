@@ -23,7 +23,8 @@ class Player: GKEntity {
             rectangleOf: self.spriteComponent.node.texture?.size() ?? .zero
         )
         self.spriteComponent.node.physicsBody?.affectedByGravity = false
-        self.spriteComponent.node.physicsBody?.linearDamping = 50
+        self.spriteComponent.node.physicsBody?.linearDamping = 10
+        self.spriteComponent.node.physicsBody?.allowsRotation = false
         addComponent(self.spriteComponent)
     }
 
@@ -38,15 +39,18 @@ class Player: GKEntity {
 
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
-            let speed: CGFloat = 50000 * seconds
-            var velocity = CGVector(
-                dx: (moving.d ? speed : 0) + (moving.a ? -speed : 0),
-                dy: (moving.w ? speed : 0) + (moving.s ? -speed : 0)
-            )
-            if (moving.a || moving.d) && (moving.w || moving.s) {
-                velocity *= CGFloat(cos(Float.pi / 4))
-            }
-            body.velocity += velocity
+            let speed: CGFloat = 40000
+            body.velocity +=
+                CGVector(
+                    dx: (moving.d ? speed : 0)
+                        + (moving.a ? -speed : 0),
+                    dy: (moving.w ? speed : 0)
+                        + (moving.s ? -speed : 0)
+                ) * seconds
+            //                if (moving.a || moving.d) && (moving.w || moving.s) {
+            //                    body.velocity.dx = sqrt(body.velocity.dx)
+            //                    body.velocity.dy = sqrt(body.velocity.dy)
+            //                }
         }
     }
 }
