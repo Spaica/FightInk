@@ -21,7 +21,10 @@ struct AndusApp: App {
                             s.scaleMode = .resizeFill
                             return s
                         }(),
-                        debugOptions: [.showsFPS, .showsNodeCount]
+                        debugOptions: [
+                            .showsFPS, .showsNodeCount,
+                            // .showsPhysics,
+                        ]
                     )
                 }
                 //                VStack {

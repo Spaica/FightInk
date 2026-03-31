@@ -8,25 +8,34 @@
 import GameKit
 
 class WorldBorderNode: SKShapeNode {
-    let radius = 800.0
+    let radius = 16000.0
 
     override init() {
         super.init()
-        let worldBorderPath: CGPath = CGPath(
+
+        self.path = CGPath(
             ellipseIn: CGRect(
                 x: -radius,
                 y: -radius,
-                width: radius * 2,
-                height: radius * 2
+                width: (radius * 2) + 32,
+                height: (radius * 2) + 32
             ),
             transform: nil
         )
-        self.path = worldBorderPath
         self.physicsBody = SKPhysicsBody(
-            edgeLoopFrom: worldBorderPath
+            edgeLoopFrom: CGPath(
+                ellipseIn: CGRect(
+                    x: -radius,
+                    y: -radius,
+                    width: radius * 2,
+                    height: radius * 2
+                ),
+                transform: nil
+            )
         )
         self.position = .zero
-        self.lineWidth = 16.0
+        self.zPosition = -0.1
+        self.lineWidth = 64.0
         self.strokeColor = .red
         if let body = self.physicsBody {
             body.isDynamic = false

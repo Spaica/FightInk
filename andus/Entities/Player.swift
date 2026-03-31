@@ -17,14 +17,15 @@ class Player: GKEntity {
 
     override init() {
         super.init()
-        self.spriteComponent.node.zRotation = CGFloat.pi / 2
-        self.spriteComponent.node.setScale(0.5)
         self.spriteComponent.node.physicsBody = SKPhysicsBody(
             rectangleOf: self.spriteComponent.node.texture?.size() ?? .zero
         )
         self.spriteComponent.node.physicsBody?.affectedByGravity = false
         self.spriteComponent.node.physicsBody?.linearDamping = 10
         self.spriteComponent.node.physicsBody?.allowsRotation = false
+
+        self.spriteComponent.node.zRotation = CGFloat.pi / 2
+        self.spriteComponent.node.setScale(0.5)
         addComponent(self.spriteComponent)
     }
 
