@@ -95,6 +95,8 @@ class GameScene: SKScene {
             self.playerEntity?.moving.s = false
         case 0x02:
             self.playerEntity?.moving.d = false
+        case 0x31:
+            self.playerEntity?.hasAttacked = false
         default:
             break
         }
