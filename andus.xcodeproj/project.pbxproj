@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		201467832F7D070B00BD2CEB /* localSigning.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 201467822F7D070B00BD2CEB /* localSigning.xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		201467822F7D070B00BD2CEB /* localSigning.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = localSigning.xcconfig; sourceTree = "<group>"; };
 		20EBEA142F7699A300F3F5B0 /* andus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = andus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		20EBEA0B2F7699A300F3F5B0 = {
 			isa = PBXGroup;
 			children = (
+				201467822F7D070B00BD2CEB /* localSigning.xcconfig */,
 				20EBEA162F7699A300F3F5B0 /* andus */,
 				20EBEA152F7699A300F3F5B0 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				201467832F7D070B00BD2CEB /* localSigning.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +134,7 @@
 /* Begin XCBuildConfiguration section */
 		20EBEA262F7699A300F3F5B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 201467822F7D070B00BD2CEB /* localSigning.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -160,7 +168,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = L923V73973;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -191,6 +198,7 @@
 		};
 		20EBEA272F7699A300F3F5B0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 201467822F7D070B00BD2CEB /* localSigning.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -224,7 +232,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = L923V73973;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -247,13 +254,13 @@
 		};
 		20EBEA292F7699A300F3F5B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 201467822F7D070B00BD2CEB /* localSigning.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L923V73973;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -286,13 +293,13 @@
 		};
 		20EBEA2A2F7699A300F3F5B0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 201467822F7D070B00BD2CEB /* localSigning.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L923V73973;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
