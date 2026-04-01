@@ -13,7 +13,6 @@ class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
     var background: Background?
-    var worldBorder: WorldBorderNode?
     let cameraNode = SKCameraNode()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -46,9 +45,6 @@ class GameScene: SKScene {
             ]
         }
         self.entityManager.add(playerEntity)
-
-        self.worldBorder = WorldBorderNode()
-        addChild(self.worldBorder!)
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -82,6 +78,20 @@ class GameScene: SKScene {
             playerEntity.moving.d = true
         default:
             break
+        }
+        let playerCenterDist = playerEntity.spriteComponent.node.position
+            .distance(to: .zero)
+        if playerCenterDist > 1600 {
+            if playerEntity.spriteComponent.node.position.x > 0 {
+                playerEntity.moving.d = false
+            } else {
+                playerEntity.moving.a = false
+            }
+            if playerEntity.spriteComponent.node.position.y > 0 {
+                playerEntity.moving.w = false
+            } else {
+                playerEntity.moving.s = false
+            }
         }
     }
 
