@@ -8,20 +8,30 @@
 import GameKit
 
 class Enemy: GKEntity {
-    var spriteComponent = SpriteComponent(
+    let spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "enemy"),
     )
+    let fieldNode = CollisionField()
 
     override init() {
         super.init()
         spriteComponent.node.setScale(0.1)
+        spriteComponent.node.position = .init(x: 200, y: 0)
         spriteComponent.node.physicsBody = .init(
             rectangleOf: spriteComponent.node.size
         )
-        spriteComponent.node.position = .init(x: 200, y: 0)
-        spriteComponent.node.physicsBody?.isDynamic = true
-        spriteComponent.node.physicsBody?.affectedByGravity = false
-        spriteComponent.node.physicsBody?.node?.zPosition = 1
+        guard let body = spriteComponent.node.physicsBody else { return }
+        body.isDynamic = true
+        body.affectedByGravity = false
+        body.node?.zPosition = 1
+        body.linearDamping = 20
+        body.categoryBitMask = CollisionBitMasks.enemy
+        body.collisionBitMask = CollisionBitMasks.worldBorder
+        body.fieldBitMask = CollisionBitMasks.enemy
+
+        self.fieldNode.size = self.spriteComponent.node.size
+        self.spriteComponent.node.addChild(self.fieldNode)
+
         addComponent(spriteComponent)
     }
 

@@ -5,7 +5,6 @@
 //  Created by Andreina Costagliola on 30/03/26.
 //
 
-import Foundation
 import GameplayKit
 import SpriteKit
 
@@ -21,8 +20,7 @@ class SpriteComponent: GKComponent {
         super.init()
     }
 
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

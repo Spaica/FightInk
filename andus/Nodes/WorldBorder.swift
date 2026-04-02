@@ -22,18 +22,19 @@ class WorldBorder: SKShapeNode {
             transform: nil
         )
         self.path = path
-        self.physicsBody = SKPhysicsBody(
-            edgeLoopFrom: path
-        )
         self.position = .zero
         self.lineWidth = 16.0
         self.strokeColor = .red
-        if let body = self.physicsBody {
-            body.isDynamic = false
-            body.friction = 0
-            body.restitution = 0
+        self.physicsBody = SKPhysicsBody(
+            edgeLoopFrom: path
+        )
+        guard let body = self.physicsBody else { return }
+        body.isDynamic = false
+        body.friction = 0
+        body.restitution = 0
+        body.categoryBitMask = CollisionBitMasks.worldBorder
+        body.fieldBitMask = 0b0
 
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {
