@@ -11,10 +11,22 @@ import SpriteKit
 
 class Player: GKEntity {
     var spriteComponent = SpriteComponent(
-        texture: SKTexture(imageNamed: "player")
+        texture: SKTexture(imageNamed: "player1")
     )
     var moving = (w: false, a: false, s: false, d: false)
     var hasAttacked: Bool = true
+    var lastDirection: Int = 0
+
+    private var playerAtlas: SKTextureAtlas {
+        return SKTextureAtlas(named: "Player")
+    }
+
+    private var playerTextures: [SKTexture] {
+        return [
+            playerAtlas.textureNamed("player1"),
+            playerAtlas.textureNamed("player2"),
+        ]
+    }
 
     override init() {
         super.init()
@@ -25,8 +37,7 @@ class Player: GKEntity {
         self.spriteComponent.node.physicsBody?.linearDamping = 10
         self.spriteComponent.node.physicsBody?.allowsRotation = false
 
-        self.spriteComponent.node.zRotation = CGFloat.pi / 2
-        self.spriteComponent.node.setScale(0.5)
+        self.spriteComponent.node.setScale(0.1)
         addComponent(self.spriteComponent)
     }
 
@@ -45,6 +56,44 @@ class Player: GKEntity {
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
             let speed: CGFloat = 40000
+
+            if moving.w || moving.a || moving.s || moving.d {
+                if self.spriteComponent.node.action(forKey: "walk")
+                    == nil
+                {
+                    let walkAnimation = SKAction.animate(
+                        with: playerTextures,
+                        timePerFrame: 0.3
+                    )
+                    let repeatWalk = SKAction.repeatForever(walkAnimation)
+                    self.spriteComponent.node.run(
+                        repeatWalk,
+                        withKey: "walk"
+                    )
+                }
+            } else {
+                self.spriteComponent.node.removeAction(forKey: "walk")
+                self.spriteComponent.node.texture = playerTextures[0]
+            }
+
+            if moving.w && moving.a {
+                self.lastDirection = 5
+            } else if moving.w && moving.d {
+                self.lastDirection = 7
+            } else if moving.s && moving.a {
+                self.lastDirection = 6
+            } else if moving.s && moving.d {
+                self.lastDirection = 8
+            } else if moving.w {
+                self.lastDirection = 1
+            } else if moving.a {
+                self.lastDirection = 2
+            } else if moving.s {
+                self.lastDirection = 3
+            } else if moving.d {
+                self.lastDirection = 4
+            }
+
             body.velocity +=
                 CGVector(
                     dx: (moving.d ? speed : 0)
@@ -64,34 +113,31 @@ class Player: GKEntity {
         hasAttacked = true
 
         var position = CGPoint.zero
-        let range: CGFloat = 100
+        let range: CGFloat = 1000
         let melee = Melee()
         let meleeAttack = melee.spriteComponent.node
 
-        switch (moving.w, moving.a, moving.s, moving.d) {
-        case (true, false, false, false):
-            position.x += range
-        case (false, true, false, false):
+        switch self.lastDirection {
+        case 1:
             position.y += range
-        case (false, false, true, false):
+        case 2:
             position.x -= range
-        case (false, false, false, true):
+        case 3:
             position.y -= range
-
-        case (true, true, false, false):
+        case 4:
             position.x += range
-            position.y += range
-        case (false, true, true, false):
+        case 5:
             position.x -= range
             position.y += range
-        case (true, false, false, true):
-            position.x += range
-            position.y -= range
-        case (false, false, true, true):
+        case 6:
             position.x -= range
             position.y -= range
-        case (false, false, false, false):
-            print("colpo ???")
+        case 7:
+            position.x += range
+            position.y += range
+        case 8:
+            position.x += range
+            position.y -= range
         default:
             break
         }
@@ -101,6 +147,5 @@ class Player: GKEntity {
         let wait = SKAction.wait(forDuration: 0.5)
         let remove = SKAction.removeFromParent()
         meleeAttack.run(SKAction.sequence([wait, remove]))
-
     }
 }
