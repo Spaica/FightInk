@@ -12,8 +12,9 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
+    var enemies: [GKEntity] = []
     var background: Background?
-    var worldBorder: WorldBorderNode?
+    var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -25,6 +26,9 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
+
+        self.worldBorder = WorldBorder()
+        addChild(self.worldBorder!)
 
         self.camera = cameraNode
         addChild(cameraNode)
@@ -47,12 +51,17 @@ class GameScene: SKScene {
         }
         self.entityManager.add(playerEntity)
 
-        self.worldBorder = WorldBorderNode()
-        addChild(self.worldBorder!)
+        enemies.append(Enemy())
+        //        if let lastEnemy = enemies.last {
+        //            lastEnemy.
+        //        }
+
+        for enemy in enemies {
+            self.entityManager.add(enemy)
+        }
     }
 
     override func update(_ currentTime: TimeInterval) {
-
         if self.lastUpdateTime == 0 {
             self.lastUpdateTime = currentTime
         }

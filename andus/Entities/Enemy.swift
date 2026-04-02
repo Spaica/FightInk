@@ -1,0 +1,41 @@
+//
+//  Enemy.swift
+//  andus
+//
+//  Created by Adriano Oliviero on 01/04/26.
+//
+
+import GameKit
+
+class Enemy: GKEntity {
+    let spriteComponent = SpriteComponent(
+        texture: SKTexture(imageNamed: "enemy"),
+    )
+    let fieldNode = CollisionField()
+
+    override init() {
+        super.init()
+        spriteComponent.node.setScale(0.1)
+        spriteComponent.node.position = .init(x: 200, y: 0)
+        spriteComponent.node.physicsBody = .init(
+            rectangleOf: spriteComponent.node.size
+        )
+        guard let body = spriteComponent.node.physicsBody else { return }
+        body.isDynamic = true
+        body.affectedByGravity = false
+        body.node?.zPosition = 1
+        body.linearDamping = 20
+        body.categoryBitMask = CollisionBitMasks.enemy
+        body.collisionBitMask = CollisionBitMasks.worldBorder
+        body.fieldBitMask = CollisionBitMasks.enemy
+
+        self.fieldNode.size = self.spriteComponent.node.size
+        self.spriteComponent.node.addChild(self.fieldNode)
+
+        addComponent(spriteComponent)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

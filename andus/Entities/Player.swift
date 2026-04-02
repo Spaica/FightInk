@@ -13,6 +13,7 @@ class Player: GKEntity {
     var spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "player1")
     )
+    var fieldNode = CollisionField()
     var moving = (w: false, a: false, s: false, d: false)
     var hasAttacked: Bool = true
     var lastDirection: Int = 0
@@ -30,19 +31,27 @@ class Player: GKEntity {
 
     override init() {
         super.init()
-        self.spriteComponent.node.physicsBody = SKPhysicsBody(
-            rectangleOf: self.spriteComponent.node.texture?.size() ?? .zero
+        self.spriteComponent.node.physicsBody = .init(
+            rectangleOf: self.spriteComponent.node.size
         )
-        self.spriteComponent.node.physicsBody?.affectedByGravity = false
-        self.spriteComponent.node.physicsBody?.linearDamping = 10
-        self.spriteComponent.node.physicsBody?.allowsRotation = false
+        guard let body = self.spriteComponent.node.physicsBody else { return }
+        body.affectedByGravity = false
+        body.linearDamping = 10
+        body.allowsRotation = false
+        body.categoryBitMask = CollisionBitMasks.player
+        body.collisionBitMask = CollisionBitMasks.worldBorder
+        body.fieldBitMask = CollisionBitMasks.enemy
 
         self.spriteComponent.node.setScale(0.1)
+        self.spriteComponent.node.zPosition = 2
+
+        self.fieldNode.size = self.spriteComponent.node.size
+        self.spriteComponent.node.physicsBody?.node?.addChild(self.fieldNode)
+
         addComponent(self.spriteComponent)
     }
 
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -55,7 +64,7 @@ class Player: GKEntity {
 
     func move(deltaTime seconds: TimeInterval) {
         if let body = self.spriteComponent.node.physicsBody {
-            let speed: CGFloat = 40000
+            let speed: CGFloat = 10000
 
             if moving.w || moving.a || moving.s || moving.d {
                 if self.spriteComponent.node.action(forKey: "walk")
