@@ -12,7 +12,9 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
+    var enemies: [GKEntity] = []
     var background: Background?
+    var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -24,6 +26,9 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
+
+        self.worldBorder = WorldBorder()
+        addChild(self.worldBorder!)
 
         self.camera = cameraNode
         addChild(cameraNode)
@@ -45,10 +50,18 @@ class GameScene: SKScene {
             ]
         }
         self.entityManager.add(playerEntity)
+
+        enemies.append(Enemy())
+        //        if let lastEnemy = enemies.last {
+        //            lastEnemy.
+        //        }
+
+        for enemy in enemies {
+            self.entityManager.add(enemy)
+        }
     }
 
     override func update(_ currentTime: TimeInterval) {
-
         if self.lastUpdateTime == 0 {
             self.lastUpdateTime = currentTime
         }
@@ -78,20 +91,6 @@ class GameScene: SKScene {
             playerEntity.moving.d = true
         default:
             break
-        }
-        let playerCenterDist = playerEntity.spriteComponent.node.position
-            .distance(to: .zero)
-        if playerCenterDist > 1600 {
-            if playerEntity.spriteComponent.node.position.x > 0 {
-                playerEntity.moving.d = false
-            } else {
-                playerEntity.moving.a = false
-            }
-            if playerEntity.spriteComponent.node.position.y > 0 {
-                playerEntity.moving.w = false
-            } else {
-                playerEntity.moving.s = false
-            }
         }
     }
 
