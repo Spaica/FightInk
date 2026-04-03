@@ -24,12 +24,15 @@ class Enemy: GKEntity {
         body.isDynamic = true
         body.affectedByGravity = false
         body.node?.zPosition = 1
-        body.linearDamping = 20
+        body.linearDamping = 5
         body.categoryBitMask = CollisionBitMasks.enemy
         body.collisionBitMask = CollisionBitMasks.worldBorder
-        body.fieldBitMask = CollisionBitMasks.enemy
+        body.fieldBitMask = CollisionBitMasks.player
 
-        self.fieldNode.size = self.spriteComponent.node.size
+        self.fieldNode.radius = Float(
+            self.spriteComponent.node.texture?.size().width ?? 1000
+        )
+        self.fieldNode.categoryBitMask = CollisionBitMasks.enemy
         self.spriteComponent.node.addChild(self.fieldNode)
 
         addComponent(spriteComponent)

@@ -9,33 +9,27 @@ import GameplayKit
 import SpriteKit
 
 class CollisionField: SKNode {
-    let field = SKFieldNode.springField()
-    private var _size: CGSize = .init(width: 1000, height: 1000)
-    var size: CGSize {
-        get { return field.region?.path?.boundingBox.size ?? .zero }
-        set(newSize) {
-            _size = newSize
-            self.field.region = .init(
-                path: CGPath(
-                    rect: CGRect(
-                        x: self.field.position.x - _size.width,
-                        y: self.field.position.y - _size.height,
-                        width: _size.width * 2,
-                        height: _size.height * 2
-                    ),
-                    transform: nil
-                )
-            )
+    let node = SKFieldNode.radialGravityField()
+    var radius: Float {
+        didSet {
+            self.node.region = .init(radius: radius)
+        }
+    }
+    var categoryBitMask: UInt32 {
+        didSet {
+            self.node.categoryBitMask = categoryBitMask
         }
     }
 
-    init(size: CGSize = .init(width: 1000, height: 1000)) {
+    override init() {
+        self.radius = 10
+        self.categoryBitMask = 0b0
         super.init()
-        self.field.falloff = -2.0
-        self.field.strength = -500.0
-        self.field.categoryBitMask = CollisionBitMasks.enemy
-        self.size = size
-        self.addChild(self.field)
+
+        self.node.falloff = 2.0
+        self.node.strength = -2000.0
+        self.node.minimumRadius = 0.0
+        self.addChild(self.node)
     }
 
     required init?(coder: NSCoder) {

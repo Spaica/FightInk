@@ -23,7 +23,7 @@ struct AndusApp: App {
                         }(),
                         debugOptions: [
                             .showsFPS, .showsNodeCount,
-                            .showsPhysics, .showsFields,
+//                            .showsPhysics, .showsFields,
                         ]
                     )
                 }

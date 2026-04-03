@@ -45,8 +45,9 @@ class Player: GKEntity {
         self.spriteComponent.node.setScale(0.1)
         self.spriteComponent.node.zPosition = 2
 
-        self.fieldNode.size = self.spriteComponent.node.size
-        self.spriteComponent.node.physicsBody?.node?.addChild(self.fieldNode)
+        self.fieldNode.radius = Float(self.spriteComponent.node.texture?.size().width ?? 1000)
+        self.fieldNode.categoryBitMask = CollisionBitMasks.player
+        self.spriteComponent.node.addChild(self.fieldNode)
 
         addComponent(self.spriteComponent)
     }
