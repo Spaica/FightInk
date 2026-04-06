@@ -45,7 +45,9 @@ class Player: GKEntity {
         self.spriteComponent.node.setScale(0.1)
         self.spriteComponent.node.zPosition = 2
 
-        self.fieldNode.radius = Float(self.spriteComponent.node.texture?.size().width ?? 1000)
+        self.fieldNode.radius = Float(
+            self.spriteComponent.node.texture?.size().width ?? 1000
+        )
         self.fieldNode.categoryBitMask = CollisionBitMasks.player
         self.spriteComponent.node.addChild(self.fieldNode)
 
@@ -104,17 +106,19 @@ class Player: GKEntity {
                 self.lastDirection = 4
             }
 
-            body.velocity +=
+            var inputVelocity =
                 CGVector(
                     dx: (moving.d ? speed : 0)
                         + (moving.a ? -speed : 0),
                     dy: (moving.w ? speed : 0)
                         + (moving.s ? -speed : 0)
                 ) * seconds
-            //                if (moving.a || moving.d) && (moving.w || moving.s) {
-            //                    body.velocity.dx = sqrt(body.velocity.dx)
-            //                    body.velocity.dy = sqrt(body.velocity.dy)
-            //                }
+
+            if inputVelocity.dx != 0 && inputVelocity.dy != 0 {
+                inputVelocity *= 0.7071067812
+            }
+            body.velocity += inputVelocity
+
         }
     }
 
