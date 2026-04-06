@@ -12,7 +12,7 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
-    var enemies: [GKEntity] = []
+    var enemies: [Enemy] = []
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
@@ -64,6 +64,12 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         if self.lastUpdateTime == 0 {
             self.lastUpdateTime = currentTime
+        }
+
+        for enemy in enemies {
+            enemy.moveTarget =
+                self.playerEntity?.spriteComponent.node.position ?? .zero
+            enemy.shouldMove = true
         }
 
         let dt = currentTime - self.lastUpdateTime
