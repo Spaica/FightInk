@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct AndusApp: App {
     @State var shouldStartGame: Bool = false
+    @FocusState private var isGameFocused: Bool
     var body: some Scene {
         WindowGroup {
             ZStack {
@@ -27,9 +28,14 @@ struct AndusApp: App {
                             }(),
                             debugOptions: [
                                 .showsFPS, .showsNodeCount,
-                                // .showsPhysics, .showsFields,
+                                .showsPhysics, .showsFields,
                             ]
                         )
+                    }
+                    .focusable()
+                    .focused(self.$isGameFocused)
+                    .onAppear {
+                        self.isGameFocused = true
                     }
                 }
             }

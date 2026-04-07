@@ -8,7 +8,7 @@
 import GameKit
 
 class WorldBorder: SKShapeNode {
-    let radius = 30000.0
+    let radius = 10000.0
 
     override init() {
         super.init()

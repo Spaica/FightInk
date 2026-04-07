@@ -13,7 +13,6 @@ class Player: GKEntity {
     var spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "player1")
     )
-    var fieldNode = CollisionField()
     var moving = (w: false, a: false, s: false, d: false)
     var hasAttacked: Bool = true
     var lastDirection: Int = 0
@@ -32,24 +31,23 @@ class Player: GKEntity {
     override init() {
         super.init()
         self.spriteComponent.node.physicsBody = .init(
-            rectangleOf: self.spriteComponent.node.size
+            polygonFrom: CGPath(
+                ellipseIn: self.spriteComponent.node.frame,
+                transform: nil
+            )
         )
         guard let body = self.spriteComponent.node.physicsBody else { return }
         body.affectedByGravity = false
         body.linearDamping = 10
+        body.mass = 80
         body.allowsRotation = false
         body.categoryBitMask = CollisionBitMasks.player
-        body.collisionBitMask = CollisionBitMasks.worldBorder
-        body.fieldBitMask = CollisionBitMasks.enemy
+        body.collisionBitMask =
+            CollisionBitMasks.worldBorder | CollisionBitMasks.monster
 
         self.spriteComponent.node.setScale(0.1)
         self.spriteComponent.node.zPosition = 2
-
-        self.fieldNode.radius = Float(
-            self.spriteComponent.node.texture?.size().width ?? 1000
-        )
-        self.fieldNode.categoryBitMask = CollisionBitMasks.player
-        self.spriteComponent.node.addChild(self.fieldNode)
+        self.spriteComponent.node.name = "player"
 
         addComponent(self.spriteComponent)
     }

@@ -11,32 +11,28 @@ class Monster: GKEntity {
     let spriteComponent = SpriteComponent(
         texture: SKTexture(imageNamed: "monster_1"),
     )
-    let fieldNode = CollisionField()
     var shouldMove: Bool = false
     var moveTarget: CGPoint = .zero
     var speed: CGFloat = 500
+    private var spriteScale = 0.1
 
     override init() {
         super.init()
-        spriteComponent.node.setScale(0.1)
+        spriteComponent.node.setScale(spriteScale)
         spriteComponent.node.position = .init(x: 200, y: 0)
         spriteComponent.node.physicsBody = .init(
-            rectangleOf: spriteComponent.node.size
+            circleOfRadius: min(
+                spriteComponent.node.size.width,
+                spriteComponent.node.size.height
+            ) * 0.5
         )
         guard let body = spriteComponent.node.physicsBody else { return }
         body.isDynamic = true
         body.affectedByGravity = false
+        body.allowsRotation = false
         body.node?.zPosition = 1
         body.linearDamping = 5
-        body.categoryBitMask = CollisionBitMasks.enemy
-        body.collisionBitMask = CollisionBitMasks.worldBorder
-        body.fieldBitMask = CollisionBitMasks.player
-
-        self.fieldNode.radius = Float(
-            self.spriteComponent.node.texture?.size().width ?? 1000
-        )
-        self.fieldNode.categoryBitMask = CollisionBitMasks.enemy
-        self.spriteComponent.node.addChild(self.fieldNode)
+        body.categoryBitMask = CollisionBitMasks.monster
 
         addComponent(spriteComponent)
     }
@@ -45,28 +41,66 @@ class Monster: GKEntity {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func update(deltaTime seconds: TimeInterval) {
-        if shouldMove {
-            let dis = (
-                x: moveTarget.x - self.spriteComponent.node.position.x,
-                y: moveTarget.y - self.spriteComponent.node.position.y
-            )
-            if hypot(dis.x, dis.y)
-                > max(
-                    self.spriteComponent.node.size.width,
-                    self.spriteComponent.node.size.height
+    func move() {
+        let sprite = self.spriteComponent.node
+        let dis = (
+            x: moveTarget.x - sprite.position.x,
+            y: moveTarget.y - sprite.position.y
+        )
+        if hypot(dis.x, dis.y) > max(sprite.size.width, sprite.size.height) {
+            let angle = atan2(dis.y, dis.x)
+            if let body = sprite.physicsBody {
+                body.velocity = .init(
+                    dx: cos(angle) * speed,
+                    dy: sin(angle) * speed
                 )
-            {
-                let angle = atan2(dis.y, dis.x)
-                if let body = self.spriteComponent.node.physicsBody {
-                    body.velocity = .init(
-                        dx: cos(angle) * speed,
-                        dy: sin(angle) * speed
-                    )
+            }
+        } else {
+            shouldMove = false
+        }
+    }
+
+    func collide() {
+        let sprite = self.spriteComponent.node
+        if let parent = sprite.parent {
+            self.moveTarget =
+                parent.children.filter(
+                    { $0.name == "player" }
+                ).first?.position ?? .zero
+            for c in parent.children {
+                guard c != sprite else { continue }
+                if c.physicsBody?.categoryBitMask == CollisionBitMasks.monster {
+                    if sprite.position.distance(to: c.position)
+                        < max(sprite.size.width, sprite.size.height)
+                    {
+                        let dist = (
+                            x: sprite.position.x - c.position.x,
+                            y: sprite.position.y - c.position.y
+                        )
+                        let angle = atan2(dist.y, dist.x)
+                        if let body = sprite.physicsBody {
+                            body.velocity += .init(
+                                dx: cos(angle) * 80,
+                                dy: sin(angle) * 80
+                            )
+                        }
+                    }
                 }
-            } else {
-                shouldMove = false
             }
         }
+    }
+
+    override func update(deltaTime seconds: TimeInterval) {
+        if (self.spriteComponent.node.parent?.childNode(withName: "player")?
+            .position.x)! - self.spriteComponent.node.position.x < 0
+        {
+            self.spriteComponent.node.xScale = -spriteScale
+        } else {
+            self.spriteComponent.node.xScale = spriteScale
+        }
+        //        if shouldMove {
+        move()
+        //        }
+        collide()
     }
 }

@@ -12,7 +12,7 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
-    var enemies: [Monster] = []
+    var monsters: [Monster] = []
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
@@ -49,15 +49,23 @@ class GameScene: SKScene {
                 )
             ]
         }
-        self.entityManager.add(playerEntity)
+        spawnMonsters()
+    }
 
-        enemies.append(Monster())
-        //        if let lastEnemy = enemies.last {
-        //            lastEnemy.
-        //        }
+    func spawnMonsters() {
+        self.entityManager.add(playerEntity!)
 
-        for enemy in enemies {
-            self.entityManager.add(enemy)
+        for i in 0..<200 {
+            monsters.append(Monster())
+            if let lastMonster = monsters.last {
+                lastMonster.spriteComponent.node.position = CGPoint(
+                    x: lastMonster.spriteComponent.node.position.x + lastMonster
+                        .spriteComponent.node.size.width
+                        * CGFloat(i),
+                    y: lastMonster.spriteComponent.node.position.y
+                )
+                self.entityManager.add(lastMonster)
+            }
         }
     }
 
@@ -66,16 +74,8 @@ class GameScene: SKScene {
             self.lastUpdateTime = currentTime
         }
 
-        for enemy in enemies {
-            enemy.moveTarget =
-                self.playerEntity?.spriteComponent.node.position ?? .zero
-            enemy.shouldMove = true
-        }
-
-        let dt = currentTime - self.lastUpdateTime
-
         for entity in self.entityManager.entities {
-            entity.update(deltaTime: dt)
+            entity.update(deltaTime: currentTime - self.lastUpdateTime)
         }
         self.lastUpdateTime = currentTime
     }
