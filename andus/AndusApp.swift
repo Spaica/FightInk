@@ -10,30 +10,36 @@ import SwiftUI
 
 @main
 struct AndusApp: App {
+    @State var shouldStartGame: Bool = false
     var body: some Scene {
         WindowGroup {
             ZStack {
-                GeometryReader { g in
-                    SpriteView(
-                        scene: {
-                            let s = GameScene()
-                            s.size = g.size
-                            s.scaleMode = .resizeFill
-                            return s
-                        }(),
-                        debugOptions: [
-                            .showsFPS, .showsNodeCount,
-//                            .showsPhysics, .showsFields,
-                        ]
-                    )
+                if !self.shouldStartGame {
+                    StartGameView(shouldStartGame: $shouldStartGame)
+                } else {
+                    GeometryReader { g in
+                        SpriteView(
+                            scene: {
+                                let s = GameScene()
+                                s.size = g.size
+                                s.scaleMode = .resizeFill
+                                return s
+                            }(),
+                            debugOptions: [
+                                .showsFPS, .showsNodeCount,
+                                // .showsPhysics, .showsFields,
+                            ]
+                        )
+                    }
                 }
-                //                VStack {
-                //                    Button {
-                //                        print("Hello, World!")
-                //                    } label: {
-                //                        Text("Hello, World!")
-                //                    }.buttonStyle(.glassProminent)
-                //                }
+            }
+            .frame(minWidth: 400, minHeight: 400)
+            .onAppear {
+                DispatchQueue.main.async {
+                    if let window = NSApplication.shared.windows.first {
+                        window.toggleFullScreen(nil)
+                    }
+                }
             }
         }
     }
