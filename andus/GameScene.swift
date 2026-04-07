@@ -12,7 +12,7 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
-    var enemies: [Enemy] = []
+    var enemies: [Monster] = []
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
@@ -51,7 +51,7 @@ class GameScene: SKScene {
         }
         self.entityManager.add(playerEntity)
 
-        enemies.append(Enemy())
+        enemies.append(Monster())
         //        if let lastEnemy = enemies.last {
         //            lastEnemy.
         //        }

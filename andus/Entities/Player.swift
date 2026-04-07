@@ -75,7 +75,7 @@ class Player: GKEntity {
                 {
                     let walkAnimation = SKAction.animate(
                         with: playerTextures,
-                        timePerFrame: 0.3
+                        timePerFrame: 0.2
                     )
                     let repeatWalk = SKAction.repeatForever(walkAnimation)
                     self.spriteComponent.node.run(

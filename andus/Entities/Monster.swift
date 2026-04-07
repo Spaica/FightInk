@@ -1,5 +1,5 @@
 //
-//  Enemy.swift
+//  Monster.swift
 //  andus
 //
 //  Created by Adriano Oliviero on 01/04/26.
@@ -7,9 +7,9 @@
 
 import GameKit
 
-class Enemy: GKEntity {
+class Monster: GKEntity {
     let spriteComponent = SpriteComponent(
-        texture: SKTexture(imageNamed: "enemy"),
+        texture: SKTexture(imageNamed: "monster_1"),
     )
     let fieldNode = CollisionField()
     var shouldMove: Bool = false
