@@ -13,10 +13,11 @@ struct AndusApp: App {
     @State var shouldStartGame: Bool = false
     @State var isGameOver: Bool = false
     @FocusState private var isGameFocused: Bool
+    @State private var hudState = HUDState()
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
+            Group {
                 if isGameOver {
                     GameOver(
                         shouldStartGame: Binding(
@@ -30,37 +31,40 @@ struct AndusApp: App {
                 } else if !self.shouldStartGame {
                     StartGameView(shouldStartGame: $shouldStartGame)
                 } else {
-                    GeometryReader { g in
-                        SpriteView(
-                            scene: {
-                                let s = GameScene()
-                                s.size = g.size
-                                s.scaleMode = .resizeFill
-                                s.shouldStartGame = $shouldStartGame
-                                s.isGameOver = $isGameOver
-                                return s
-                            }(),
-                            debugOptions: [
-                                .showsFPS, .showsNodeCount,
-                                .showsPhysics, .showsFields,
-                            ]
-                        )
-                    }
-                    .focusable()
-                    .focused(self.$isGameFocused)
-                    .onAppear {
-                        self.isGameFocused = true
-                    }
-                }
-            }
-            .frame(minWidth: 400, minHeight: 400)
-            .onAppear {
-                DispatchQueue.main.async {
-                    if let window = NSApplication.shared.windows.first {
-                        window.toggleFullScreen(nil)
+                    ZStack {
+                        GeometryReader { g in
+                            SpriteView(
+                                scene: {
+                                    let s = GameScene()
+                                    s.size = g.size
+                                    s.scaleMode = .resizeFill
+                                    s.shouldStartGame = $shouldStartGame
+                                    s.isGameOver = $isGameOver
+                                    s.hudState = hudState
+                                    return s
+                                }(),
+                                debugOptions: [
+                                    .showsFPS, .showsNodeCount,
+                                    .showsPhysics, .showsFields,
+                                ]
+                            )
+                        }
+                        .focusable()
+                        .focused(self.$isGameFocused)
+                        .onAppear {
+                            self.isGameFocused = true
+                        }
+                        HUDView(hudState: hudState)
                     }
                 }
-            }
+            }.frame(minWidth: 400, minHeight: 400)
+                .onAppear {
+                    DispatchQueue.main.async {
+                        if let window = NSApplication.shared.windows.first {
+                            window.toggleFullScreen(nil)
+                        }
+                    }
+                }
         }
     }
 }

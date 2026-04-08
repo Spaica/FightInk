@@ -19,6 +19,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
+    var hudState: HUDState?
     var hordeIdx = 1
 
     private var lastUpdateTime: TimeInterval = 0
@@ -55,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ]
         }
         self.entityManager.add(playerEntity)
-        let spawnWait = SKAction.wait(forDuration: 1)
+        let spawnWait = SKAction.wait(forDuration: 8)
         let spawn = SKAction.run {
             self.spawnMonsters()
         }
@@ -143,6 +144,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 let damage = attackingMonster.attackValue
                 playerEntity?.life -= damage
+
+                DispatchQueue.main.async {
+                    self.hudState?.playerHealth = self.playerEntity?.life ?? 0
+                }
 
                 if let life = playerEntity?.life, life <= 0 {
                     DispatchQueue.main.async {

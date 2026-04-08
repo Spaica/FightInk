@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		201467822F7D070B00BD2CEB /* localSigning.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = localSigning.xcconfig; sourceTree = "<group>"; };
-		20EBEA142F7699A300F3F5B0 /* andus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = andus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20EBEA142F7699A300F3F5B0 /* Fight ink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fight ink.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -59,7 +59,7 @@
 		20EBEA152F7699A300F3F5B0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				20EBEA142F7699A300F3F5B0 /* andus.app */,
+				20EBEA142F7699A300F3F5B0 /* Fight ink.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -86,7 +86,7 @@
 			packageProductDependencies = (
 			);
 			productName = andus;
-			productReference = 20EBEA142F7699A300F3F5B0 /* andus.app */;
+			productReference = 20EBEA142F7699A300F3F5B0 /* Fight ink.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
