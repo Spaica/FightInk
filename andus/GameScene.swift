@@ -76,8 +76,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     in: cameraSize.height...(cameraSize.height + 300)
                 )
         )
-        hordeCenter.x *= CGFloat(Int.random(in: -1...1))
-        hordeCenter.y *= CGFloat(Int.random(in: -1...1))
+        hordeCenter.x *= CGFloat([-1, 1].randomElement()!)
+        hordeCenter.y *= CGFloat([-1, 1].randomElement()!)
         for _ in 0..<hordeIdx {
             let monster = Monster(at: hordeCenter, range: 100.0)
             monsters.append(monster)
