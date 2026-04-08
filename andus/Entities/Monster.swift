@@ -33,6 +33,8 @@ class Monster: GKEntity {
         body.node?.zPosition = 1
         body.linearDamping = 5
         body.categoryBitMask = CollisionBitMasks.monster
+        body.collisionBitMask =
+            CollisionBitMasks.worldBorder | CollisionBitMasks.player
 
         addComponent(spriteComponent)
     }
@@ -43,11 +45,17 @@ class Monster: GKEntity {
 
     func move() {
         let sprite = self.spriteComponent.node
+        self.moveTarget =
+            sprite.parent!.children.filter(
+                { $0.name == "player" }
+            ).first?.position ?? .zero
         let dis = (
             x: moveTarget.x - sprite.position.x,
             y: moveTarget.y - sprite.position.y
         )
-        if hypot(dis.x, dis.y) > max(sprite.size.width, sprite.size.height) {
+        if hypot(dis.x, dis.y) > max(sprite.size.width, sprite.size.height)
+            * 1.5
+        {
             let angle = atan2(dis.y, dis.x)
             if let body = sprite.physicsBody {
                 body.velocity = .init(
@@ -63,10 +71,6 @@ class Monster: GKEntity {
     func collide() {
         let sprite = self.spriteComponent.node
         if let parent = sprite.parent {
-            self.moveTarget =
-                parent.children.filter(
-                    { $0.name == "player" }
-                ).first?.position ?? .zero
             for c in parent.children {
                 guard c != sprite else { continue }
                 if c.physicsBody?.categoryBitMask == CollisionBitMasks.monster {
@@ -80,8 +84,8 @@ class Monster: GKEntity {
                         let angle = atan2(dist.y, dist.x)
                         if let body = sprite.physicsBody {
                             body.velocity += .init(
-                                dx: cos(angle) * 80,
-                                dy: sin(angle) * 80
+                                dx: cos(angle) * 100,
+                                dy: sin(angle) * 100
                             )
                         }
                     }

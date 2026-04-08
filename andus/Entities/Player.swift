@@ -42,8 +42,7 @@ class Player: GKEntity {
         body.mass = 80
         body.allowsRotation = false
         body.categoryBitMask = CollisionBitMasks.player
-        body.collisionBitMask =
-            CollisionBitMasks.worldBorder | CollisionBitMasks.monster
+        body.collisionBitMask = CollisionBitMasks.worldBorder
 
         self.spriteComponent.node.setScale(0.1)
         self.spriteComponent.node.zPosition = 2

@@ -55,7 +55,7 @@ class GameScene: SKScene {
     func spawnMonsters() {
         self.entityManager.add(playerEntity!)
 
-        for i in 0..<200 {
+        for i in 0..<20 {
             monsters.append(Monster())
             if let lastMonster = monsters.last {
                 lastMonster.spriteComponent.node.position = CGPoint(
