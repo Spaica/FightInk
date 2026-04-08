@@ -11,7 +11,7 @@ struct StartGameView: View {
     @Binding var shouldStartGame: Bool
     let titleFontSize = 370.0
     var body: some View {
-        Image(.startScreenBG)
+        Image(.startScreenBg)
             .resizable()
             .scaledToFill()
         VStack {

@@ -12,7 +12,7 @@ struct GameOver: View {
     let titleFontSize = 370.0
 
     var body: some View {
-        Image(.startScreenBG)
+        Image(.startScreenBg)
             .resizable()
             .scaledToFill()
         VStack {

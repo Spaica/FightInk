@@ -20,19 +20,7 @@ class Monster: GKEntity {
     var hasAttacked: Bool = false
     var attackTimer: TimeInterval = 0
 
-    init(at: CGPoint, range: CGFloat) {
-        super.init()
-
-        let offset = CGPoint(
-            x: .random(in: -range...range),
-            y: .random(in: -range...range)
-        )
-
-        spriteComponent.node.position = at + offset
-
-        self.attackTimer = Double.random(in: 0...3.0)
-
-        spriteComponent.node.setScale(spriteScale)
+    func initBody() {
         spriteComponent.node.physicsBody = .init(
             circleOfRadius: min(
                 spriteComponent.node.size.width,
@@ -49,6 +37,19 @@ class Monster: GKEntity {
         body.collisionBitMask =
             CollisionBitMasks.worldBorder | CollisionBitMasks.player
             | CollisionBitMasks.monster
+    }
+
+    init(at: CGPoint, range: CGFloat) {
+        super.init()
+
+        let offset = CGPoint(
+            x: .random(in: -range...range),
+            y: .random(in: -range...range)
+        )
+        spriteComponent.node.position = at + offset
+        spriteComponent.node.setScale(spriteScale)
+
+        self.attackTimer = Double.random(in: 0...3.0)
 
         addComponent(spriteComponent)
     }
@@ -87,8 +88,8 @@ class Monster: GKEntity {
         hasAttacked = true
 
         let range: CGFloat = 50
-        let melee = MeleeMonster()
-        let meleeAttack = melee.spriteComponent.node
+        let melee = Melee(imageNamed: "melee_monster")
+        guard let meleeAttack = melee.spriteComponent?.node else { return }
         meleeAttack.name = "monsterMelee_\(self.spriteComponent.node.hash)"
         meleeAttack.setScale(0.06)
 

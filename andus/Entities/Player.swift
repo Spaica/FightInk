@@ -23,7 +23,7 @@ class Player: GKEntity {
     private var walkAnimation: SKAction?
     private var idleAnimation: SKAction?
 
-    func setupAnimations() {
+    func initAnimations() {
         let playerAtlas: SKTextureAtlas = SKTextureAtlas(named: "Player")
         let walkTextures: [SKTexture] = [
             playerAtlas.textureNamed("player_walk_1"),
@@ -45,8 +45,7 @@ class Player: GKEntity {
         )
     }
 
-    override init() {
-        super.init()
+    func initBody() {
         self.spriteComponent.node.physicsBody = .init(
             polygonFrom: CGPath(
                 ellipseIn: self.spriteComponent.node.frame,
@@ -60,12 +59,18 @@ class Player: GKEntity {
         body.allowsRotation = false
         body.categoryBitMask = CollisionBitMasks.player
         body.collisionBitMask = CollisionBitMasks.worldBorder
+    }
+
+    override init() {
+        super.init()
+
+        initBody()
 
         self.spriteComponent.node.setScale(0.08)
         self.spriteComponent.node.zPosition = 2
         self.spriteComponent.node.name = "player"
 
-        setupAnimations()
+        initAnimations()
         self.spriteComponent.node.run(
             SKAction.repeatForever(self.idleAnimation!)
         )
@@ -131,7 +136,6 @@ class Player: GKEntity {
                 inputVelocity *= 0.7071067812
             }
             body.velocity += inputVelocity
-
         }
     }
 
@@ -139,61 +143,53 @@ class Player: GKEntity {
         guard !hasAttacked else { return }
         hasAttacked = true
 
-        var position = CGPoint.zero
         let range: CGFloat = 800
-        let melee = Melee()
-        let meleeAttack = melee.spriteComponent.node
+        let melee = Melee(imageNamed: "melee_player")
+        guard let meleeNode = melee.spriteComponent?.node else { return }
 
         switch self.lastDirection {
         case 1:
-            position.y += range
-            meleeAttack.zRotation = CGFloat.pi / 2
+            meleeNode.position.y += range
+            meleeNode.zRotation = CGFloat.pi / 2
         case 2:
-            position.x -= range
-            meleeAttack.zRotation = CGFloat.pi
-            meleeAttack.yScale = -abs(meleeAttack.xScale)
+            meleeNode.position.x -= range
+            meleeNode.zRotation = CGFloat.pi
+            meleeNode.yScale = -abs(meleeNode.xScale)
         case 3:
-            position.y -= range
-            meleeAttack.zRotation = -CGFloat.pi / 2
-            meleeAttack.yScale = -abs(meleeAttack.xScale)
+            meleeNode.position.y -= range
+            meleeNode.zRotation = -CGFloat.pi / 2
+            meleeNode.yScale = -abs(meleeNode.xScale)
         case 4:
-            position.x += range
+            meleeNode.position.x += range
         case 5:
-            position.x -= range
-            position.y += range
-            meleeAttack.zRotation = (CGFloat.pi * 3) / 4
-            meleeAttack.yScale = -abs(meleeAttack.xScale)
+            meleeNode.position.x -= range
+            meleeNode.position.y += range
+            meleeNode.zRotation = (CGFloat.pi * 3) / 4
+            meleeNode.yScale = -abs(meleeNode.xScale)
         case 6:
-            position.x -= range
-            position.y -= range
-            meleeAttack.zRotation = (CGFloat.pi * 5) / 4
-            meleeAttack.yScale = -abs(meleeAttack.xScale)
+            meleeNode.position.x -= range
+            meleeNode.position.y -= range
+            meleeNode.zRotation = (CGFloat.pi * 5) / 4
+            meleeNode.yScale = -abs(meleeNode.xScale)
         case 7:
-            position.x += range
-            position.y += range
-            meleeAttack.zRotation = CGFloat.pi / 4
+            meleeNode.position.x += range
+            meleeNode.position.y += range
+            meleeNode.zRotation = CGFloat.pi / 4
         case 8:
-            position.x += range
-            position.y -= range
-            meleeAttack.zRotation = -CGFloat.pi / 4
+            meleeNode.position.x += range
+            meleeNode.position.y -= range
+            meleeNode.zRotation = -CGFloat.pi / 4
         default:
             break
         }
-        meleeAttack.position = position
-        meleeAttack.zPosition = -0.1
 
-        if let texture = meleeAttack.texture {
-            meleeAttack.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
-            meleeAttack.physicsBody?.isDynamic = false
-            meleeAttack.physicsBody?.categoryBitMask = CollisionBitMasks.melee
-            meleeAttack.physicsBody?.contactTestBitMask =
-                CollisionBitMasks.monster
-            meleeAttack.physicsBody?.collisionBitMask = 0
-        }
-
-        self.spriteComponent.node.addChild(meleeAttack)
+        self.spriteComponent.node.addChild(meleeNode)
         let wait = SKAction.wait(forDuration: 0.2)
         let remove = SKAction.removeFromParent()
-        meleeAttack.run(SKAction.sequence([wait, remove]))
+        meleeNode.run(
+            SKAction.sequence([
+                wait, SKAction.fadeOut(withDuration: 0.1), remove,
+            ])
+        )
     }
 }
