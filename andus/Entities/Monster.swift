@@ -16,7 +16,7 @@ class Monster: GKEntity {
     var speed: CGFloat = 500
     private var spriteScale = 0.1
     var life: Float = 75
-    var attackValue: Float = 20
+    var attackValue: Float = 10
     var hasAttacked: Bool = false
     var attackTimer: TimeInterval = 0
 
@@ -106,6 +106,7 @@ class Monster: GKEntity {
         let range: CGFloat = 50
         let melee = MeleeMonster()
         let meleeAttack = melee.spriteComponent.node
+        meleeAttack.name = "monsterMelee_\(self.spriteComponent.node.hash)"
         meleeAttack.setScale(0.06)
 
         guard let scene = self.spriteComponent.node.parent,

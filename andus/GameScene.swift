@@ -8,8 +8,11 @@
 import Foundation
 import GameplayKit
 import SpriteKit
+import SwiftUI
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    var shouldStartGame: Binding<Bool>?
+    var isGameOver: Binding<Bool>?
     var entityManager: EntityManager!
     var playerEntity: Player?
     var monsters: [Monster] = []
@@ -119,17 +122,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (playerBody.categoryBitMask & CollisionBitMasks.player != 0)
             && (monsterMeleeBody.categoryBitMask & CollisionBitMasks.melee != 0)
         {
-            if let attackingMonster = monsters.first(where: {
-                $0.spriteComponent.node.children.contains(
-                    monsterMeleeBody.node!
-                )
-            }) {
-
+            if let attackNodeName = monsterMeleeBody.node?.name,
+                let attackingMonster = monsters.first(where: {
+                    "monsterMelee_\($0.spriteComponent.node.hash)"
+                        == attackNodeName
+                })
+            {
                 let damage = attackingMonster.attackValue
                 playerEntity?.life -= damage
 
                 if let life = playerEntity?.life, life <= 0 {
-                    //GameOver(shouldStartGame: $shouldStartGame)
+                    DispatchQueue.main.async {
+                        self.isGameOver?.wrappedValue = true
+                        self.shouldStartGame?.wrappedValue = false
+                    }
                 }
             }
         }

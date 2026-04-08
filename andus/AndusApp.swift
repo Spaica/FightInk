@@ -11,11 +11,23 @@ import SwiftUI
 @main
 struct AndusApp: App {
     @State var shouldStartGame: Bool = false
+    @State var isGameOver: Bool = false
     @FocusState private var isGameFocused: Bool
+
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if !self.shouldStartGame {
+                if isGameOver {
+                    GameOver(
+                        shouldStartGame: Binding(
+                            get: { self.shouldStartGame },
+                            set: { newValue in
+                                self.isGameOver = false
+                                self.shouldStartGame = newValue
+                            }
+                        )
+                    )
+                } else if !self.shouldStartGame {
                     StartGameView(shouldStartGame: $shouldStartGame)
                 } else {
                     GeometryReader { g in
@@ -24,6 +36,8 @@ struct AndusApp: App {
                                 let s = GameScene()
                                 s.size = g.size
                                 s.scaleMode = .resizeFill
+                                s.shouldStartGame = $shouldStartGame
+                                s.isGameOver = $isGameOver
                                 return s
                             }(),
                             debugOptions: [
