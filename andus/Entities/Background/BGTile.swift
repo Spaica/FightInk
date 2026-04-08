@@ -23,7 +23,7 @@ class BGTile: GKEntity {
 
         self.spriteComponent.node.zPosition = -0.1
         self.spriteComponent.node.position = CGPoint(x: x, y: y)
-        self.spriteComponent.node.alpha = 0.5
+        self.spriteComponent.node.alpha = 0.8
         addComponent(self.spriteComponent)
     }
 

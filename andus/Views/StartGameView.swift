@@ -18,7 +18,7 @@ struct StartGameView: View {
             Spacer()
             HStack {
                 Text("Fight")
-                    .foregroundStyle(.titleFont)
+                    .foregroundStyle(.black)
                     .font(
                         .custom(
                             "Sentreno",
@@ -31,7 +31,7 @@ struct StartGameView: View {
                         text: "ink",
                         fontName: "Sentreno",
                         fontSize: titleFontSize,
-                        strokeColor: .titleFont,
+                        strokeColor: .black,
                         fillColor: .clear,
                         strokeWidth: 7.0
                     )
@@ -50,7 +50,7 @@ struct StartGameView: View {
                 self.shouldStartGame = true
             } label: {
                 Text("Play")
-                    .foregroundStyle(.titleFont)
+                    .foregroundStyle(.black)
                     .font(
                         .custom(
                             "Silom",
@@ -65,7 +65,7 @@ struct StartGameView: View {
                 )
             } label: {
                 Text("Options")
-                    .foregroundStyle(.titleFont)
+                    .foregroundStyle(.black)
                     .font(
                         .custom(
                             "Silom",

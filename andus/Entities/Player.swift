@@ -23,8 +23,10 @@ class Player: GKEntity {
 
     private var playerTextures: [SKTexture] {
         return [
-            playerAtlas.textureNamed("player1"),
-            playerAtlas.textureNamed("player2"),
+            playerAtlas.textureNamed("player_walk_1"),
+            playerAtlas.textureNamed("player_walk_2"),
+            playerAtlas.textureNamed("player_walk_3"),
+            playerAtlas.textureNamed("player_walk_4"),
         ]
     }
 
@@ -44,7 +46,7 @@ class Player: GKEntity {
         body.categoryBitMask = CollisionBitMasks.player
         body.collisionBitMask = CollisionBitMasks.worldBorder
 
-        self.spriteComponent.node.setScale(0.1)
+        self.spriteComponent.node.setScale(0.08)
         self.spriteComponent.node.zPosition = 2
         self.spriteComponent.node.name = "player"
 

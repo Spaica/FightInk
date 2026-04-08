@@ -12,10 +12,10 @@ import SpriteKit
 class GameScene: SKScene {
     var entityManager: EntityManager!
     var playerEntity: Player?
-    var monsters: [Monster] = []
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
+    var hordeIdx = 1
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -49,24 +49,36 @@ class GameScene: SKScene {
                 )
             ]
         }
-        spawnMonsters()
+        self.entityManager.add(playerEntity)
+        let spawnWait = SKAction.wait(forDuration: 8)
+        let spawn = SKAction.run {
+            self.spawnMonsters()
+        }
+        let sequence = SKAction.sequence([spawnWait, spawn])
+        self.run(SKAction.repeatForever(sequence))
+        //        spawnMonsters()
     }
 
     func spawnMonsters() {
-        self.entityManager.add(playerEntity!)
-
-        for i in 0..<20 {
-            monsters.append(Monster())
-            if let lastMonster = monsters.last {
-                lastMonster.spriteComponent.node.position = CGPoint(
-                    x: lastMonster.spriteComponent.node.position.x + lastMonster
-                        .spriteComponent.node.size.width
-                        * CGFloat(i),
-                    y: lastMonster.spriteComponent.node.position.y
+        guard let playerEntity = playerEntity else { return }
+        guard let cameraSize = cameraNode.scene?.size else { return }
+        var hordeCenter = CGPoint(
+            x: playerEntity.spriteComponent.node.position.x
+                + CGFloat.random(
+                    in: cameraSize.width...(cameraSize.width + 300)
+                ),
+            y: playerEntity.spriteComponent.node.position.y
+                + CGFloat.random(
+                    in: cameraSize.height...(cameraSize.height + 300)
                 )
-                self.entityManager.add(lastMonster)
-            }
+        )
+        hordeCenter.x *= CGFloat(Int.random(in: -1...1))
+        hordeCenter.y *= CGFloat(Int.random(in: -1...1))
+        for _ in 0..<hordeIdx {
+            let monster = Monster(at: hordeCenter, range: 100.0)
+            self.entityManager.add(monster)
         }
+        hordeIdx += 1
     }
 
     override func update(_ currentTime: TimeInterval) {

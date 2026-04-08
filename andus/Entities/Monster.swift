@@ -14,12 +14,17 @@ class Monster: GKEntity {
     var shouldMove: Bool = false
     var moveTarget: CGPoint = .zero
     var speed: CGFloat = 500
-    private var spriteScale = 0.1
+    private var spriteScale = 0.05
 
-    override init() {
+    init(at: CGPoint, range: CGFloat) {
         super.init()
+        let offset = CGPoint(
+            x: .random(in: -range...range),
+            y: .random(in: -range...range)
+        )
+
+        spriteComponent.node.position = at + offset
         spriteComponent.node.setScale(spriteScale)
-        spriteComponent.node.position = .init(x: 200, y: 0)
         spriteComponent.node.physicsBody = .init(
             circleOfRadius: min(
                 spriteComponent.node.size.width,
@@ -33,8 +38,6 @@ class Monster: GKEntity {
         body.node?.zPosition = 1
         body.linearDamping = 5
         body.categoryBitMask = CollisionBitMasks.monster
-        body.collisionBitMask =
-            CollisionBitMasks.worldBorder | CollisionBitMasks.player
 
         addComponent(spriteComponent)
     }
@@ -68,32 +71,6 @@ class Monster: GKEntity {
         }
     }
 
-    func collide() {
-        let sprite = self.spriteComponent.node
-        if let parent = sprite.parent {
-            for c in parent.children {
-                guard c != sprite else { continue }
-                if c.physicsBody?.categoryBitMask == CollisionBitMasks.monster {
-                    if sprite.position.distance(to: c.position)
-                        < max(sprite.size.width, sprite.size.height)
-                    {
-                        let dist = (
-                            x: sprite.position.x - c.position.x,
-                            y: sprite.position.y - c.position.y
-                        )
-                        let angle = atan2(dist.y, dist.x)
-                        if let body = sprite.physicsBody {
-                            body.velocity += .init(
-                                dx: cos(angle) * 100,
-                                dy: sin(angle) * 100
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     override func update(deltaTime seconds: TimeInterval) {
         if (self.spriteComponent.node.parent?.childNode(withName: "player")?
             .position.x)! - self.spriteComponent.node.position.x < 0
@@ -105,6 +82,5 @@ class Monster: GKEntity {
         //        if shouldMove {
         move()
         //        }
-        collide()
     }
 }
