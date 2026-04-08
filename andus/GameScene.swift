@@ -9,7 +9,7 @@ import Foundation
 import GameplayKit
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     var entityManager: EntityManager!
     var playerEntity: Player?
     var monsters: [Monster] = []
@@ -24,6 +24,7 @@ class GameScene: SKScene {
     }
 
     override func didMove(to view: SKView) {
+        self.physicsWorld.contactDelegate = self
         backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
 
@@ -67,6 +68,72 @@ class GameScene: SKScene {
                 self.entityManager.add(lastMonster)
             }
         }
+    }
+
+    func didBegin(_ contact: SKPhysicsContact) {
+        var monsterBody: SKPhysicsBody
+        var meleeBody: SKPhysicsBody
+        var playerBody: SKPhysicsBody
+        var monsterMeleeBody: SKPhysicsBody
+
+        //Player vs mostro
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            monsterBody = contact.bodyA
+            meleeBody = contact.bodyB
+        } else {
+            monsterBody = contact.bodyB
+            meleeBody = contact.bodyA
+        }
+
+        if (monsterBody.categoryBitMask & CollisionBitMasks.monster != 0)
+            && (meleeBody.categoryBitMask & CollisionBitMasks.melee != 0)
+        {
+            if let monsterEntity = monsters.first(where: {
+                $0.spriteComponent.node == monsterBody.node
+            }) {
+
+                if let damage = playerEntity?.attackValue {
+                    monsterEntity.life -= damage
+                }
+
+                if monsterEntity.life <= 0 {
+                    entityManager.remove(monsterEntity)
+                    if let index = monsters.firstIndex(of: monsterEntity) {
+                        monsters.remove(at: index)
+                    }
+                    monsterEntity.spriteComponent.node.removeFromParent()
+
+                }
+            }
+        }
+
+        //Mostro vs player
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            playerBody = contact.bodyA
+            monsterMeleeBody = contact.bodyB
+        } else {
+            playerBody = contact.bodyB
+            monsterMeleeBody = contact.bodyA
+        }
+
+        if (playerBody.categoryBitMask & CollisionBitMasks.player != 0)
+            && (monsterMeleeBody.categoryBitMask & CollisionBitMasks.melee != 0)
+        {
+            if let attackingMonster = monsters.first(where: {
+                $0.spriteComponent.node.children.contains(
+                    monsterMeleeBody.node!
+                )
+            }) {
+
+                let damage = attackingMonster.attackValue
+                playerEntity?.life -= damage
+
+                if let life = playerEntity?.life, life <= 0 {
+                    //GameOver(shouldStartGame: $shouldStartGame)
+                }
+            }
+        }
+
     }
 
     override func update(_ currentTime: TimeInterval) {

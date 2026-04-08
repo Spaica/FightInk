@@ -15,9 +15,14 @@ class Monster: GKEntity {
     var moveTarget: CGPoint = .zero
     var speed: CGFloat = 500
     private var spriteScale = 0.1
+    var life: Float = 75
+    var attackValue: Float = 20
+    var hasAttacked: Bool = false
+    var attackTimer: TimeInterval = 0
 
     override init() {
         super.init()
+        self.attackTimer = Double.random(in: 0...3.0)
         spriteComponent.node.setScale(spriteScale)
         spriteComponent.node.position = .init(x: 200, y: 0)
         spriteComponent.node.physicsBody = .init(
@@ -94,17 +99,73 @@ class Monster: GKEntity {
         }
     }
 
+    func attack() {
+        guard !hasAttacked else { return }
+        hasAttacked = true
+
+        let range: CGFloat = 50
+        let melee = MeleeMonster()
+        let meleeAttack = melee.spriteComponent.node
+        meleeAttack.setScale(0.06)
+
+        guard let scene = self.spriteComponent.node.parent,
+            let playerEntity = scene.childNode(withName: "player")
+        else {
+            hasAttacked = false
+            return
+        }
+
+        let position = self.spriteComponent.node.position
+        let dx = playerEntity.position.x - position.x
+        let dy = playerEntity.position.y - position.y
+        let angle = atan2(dy, dx)
+        meleeAttack.position = CGPoint(
+            x: position.x + cos(angle) * range,
+            y: position.y + sin(angle) * range
+        )
+        meleeAttack.zRotation = angle
+        meleeAttack.zPosition = -0.1
+
+        if let texture = meleeAttack.texture {
+            meleeAttack.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
+            meleeAttack.physicsBody?.isDynamic = false
+            meleeAttack.physicsBody?.categoryBitMask = CollisionBitMasks.melee
+            meleeAttack.physicsBody?.contactTestBitMask =
+                CollisionBitMasks.player
+            meleeAttack.physicsBody?.collisionBitMask = 0
+        }
+
+        scene.addChild(meleeAttack)
+        let wait = SKAction.wait(forDuration: 0.2)
+        let remove = SKAction.removeFromParent()
+        meleeAttack.run(SKAction.sequence([wait, remove]))
+        hasAttacked = false
+    }
+
     override func update(deltaTime seconds: TimeInterval) {
-        if (self.spriteComponent.node.parent?.childNode(withName: "player")?
-            .position.x)! - self.spriteComponent.node.position.x < 0
-        {
+        guard let parentNode = self.spriteComponent.node.parent,
+            let playerNode = parentNode.childNode(withName: "player")
+        else {
+            return
+        }
+        if playerNode.position.x - self.spriteComponent.node.position.x < 0 {
             self.spriteComponent.node.xScale = -spriteScale
         } else {
             self.spriteComponent.node.xScale = spriteScale
         }
-        //        if shouldMove {
+
+        //        if (self.spriteComponent.node.parent?.childNode(withName: "player")?
+        //            .position.x)! - self.spriteComponent.node.position.x < 0
+        //        {
+
+        attackTimer += seconds
+        if attackTimer >= 3.0 {
+            attack()
+            attackTimer = 0
+        }
+
         move()
-        //        }
         collide()
+
     }
 }
