@@ -8,14 +8,18 @@
 import Foundation
 import GameplayKit
 import SpriteKit
+import SwiftUI
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
+    var shouldStartGame: Binding<Bool>?
+    var isGameOver: Binding<Bool>?
     var entityManager: EntityManager!
+    var monsters: [Monster] = []
     var playerEntity: Player?
     var background: Background?
     var worldBorder: WorldBorder?
     let cameraNode = SKCameraNode()
-    var hordeIdx = 1
+    var hordeIdx = 10
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -24,6 +28,7 @@ class GameScene: SKScene {
     }
 
     override func didMove(to view: SKView) {
+        self.physicsWorld.contactDelegate = self
         backgroundColor = SKColor.darkGray
         self.entityManager = EntityManager(scene: self)
 
@@ -56,7 +61,6 @@ class GameScene: SKScene {
         }
         let sequence = SKAction.sequence([spawnWait, spawn])
         self.run(SKAction.repeatForever(sequence))
-        //        spawnMonsters()
     }
 
     func spawnMonsters() {
@@ -76,9 +80,79 @@ class GameScene: SKScene {
         hordeCenter.y *= CGFloat(Int.random(in: -1...1))
         for _ in 0..<hordeIdx {
             let monster = Monster(at: hordeCenter, range: 100.0)
+            monsters.append(monster)
             self.entityManager.add(monster)
         }
         hordeIdx += 1
+    }
+
+    func didBegin(_ contact: SKPhysicsContact) {
+        var monsterBody: SKPhysicsBody
+        var meleeBody: SKPhysicsBody
+        var playerBody: SKPhysicsBody
+        var monsterMeleeBody: SKPhysicsBody
+
+        //Player vs mostro
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            monsterBody = contact.bodyA
+            meleeBody = contact.bodyB
+        } else {
+            monsterBody = contact.bodyB
+            meleeBody = contact.bodyA
+        }
+
+        if (monsterBody.categoryBitMask & CollisionBitMasks.monster != 0)
+            && (meleeBody.categoryBitMask & CollisionBitMasks.melee != 0)
+        {
+            if let monsterEntity = monsters.first(where: {
+                $0.spriteComponent.node == monsterBody.node
+            }) {
+
+                if let damage = playerEntity?.attackValue {
+                    monsterEntity.life -= damage
+                }
+
+                if monsterEntity.life <= 0 {
+                    entityManager.remove(monsterEntity)
+                    if let index = monsters.firstIndex(of: monsterEntity) {
+                        monsters.remove(at: index)
+                    }
+                    monsterEntity.spriteComponent.node.removeFromParent()
+
+                }
+            }
+        }
+
+        //Mostro vs player
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            playerBody = contact.bodyA
+            monsterMeleeBody = contact.bodyB
+        } else {
+            playerBody = contact.bodyB
+            monsterMeleeBody = contact.bodyA
+        }
+
+        if (playerBody.categoryBitMask & CollisionBitMasks.player != 0)
+            && (monsterMeleeBody.categoryBitMask & CollisionBitMasks.melee != 0)
+        {
+            if let attackNodeName = monsterMeleeBody.node?.name,
+                let attackingMonster = monsters.first(where: {
+                    "monsterMelee_\($0.spriteComponent.node.hash)"
+                        == attackNodeName
+                })
+            {
+                let damage = attackingMonster.attackValue
+                playerEntity?.life -= damage
+
+                if let life = playerEntity?.life, life <= 0 {
+                    DispatchQueue.main.async {
+                        self.isGameOver?.wrappedValue = true
+                        self.shouldStartGame?.wrappedValue = false
+                    }
+                }
+            }
+        }
+
     }
 
     override func update(_ currentTime: TimeInterval) {

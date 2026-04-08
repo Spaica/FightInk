@@ -16,6 +16,9 @@ class Player: GKEntity {
     var moving = (w: false, a: false, s: false, d: false)
     var hasAttacked: Bool = true
     var lastDirection: Int = 0
+    var life: Float = 100
+    var attackValue: Float = 25
+    var defense: Float = 10
 
     private var playerAtlas: SKTextureAtlas {
         return SKTextureAtlas(named: "Player")
@@ -126,38 +129,59 @@ class Player: GKEntity {
         hasAttacked = true
 
         var position = CGPoint.zero
-        let range: CGFloat = 1000
+        let range: CGFloat = 800
         let melee = Melee()
         let meleeAttack = melee.spriteComponent.node
 
         switch self.lastDirection {
         case 1:
             position.y += range
+            meleeAttack.zRotation = CGFloat.pi / 2
         case 2:
             position.x -= range
+            meleeAttack.zRotation = CGFloat.pi
+            meleeAttack.yScale = -abs(meleeAttack.xScale)
         case 3:
             position.y -= range
+            meleeAttack.zRotation = -CGFloat.pi / 2
+            meleeAttack.yScale = -abs(meleeAttack.xScale)
         case 4:
             position.x += range
         case 5:
             position.x -= range
             position.y += range
+            meleeAttack.zRotation = (CGFloat.pi * 3) / 4
+            meleeAttack.yScale = -abs(meleeAttack.xScale)
         case 6:
             position.x -= range
             position.y -= range
+            meleeAttack.zRotation = (CGFloat.pi * 5) / 4
+            meleeAttack.yScale = -abs(meleeAttack.xScale)
         case 7:
             position.x += range
             position.y += range
+            meleeAttack.zRotation = CGFloat.pi / 4
         case 8:
             position.x += range
             position.y -= range
+            meleeAttack.zRotation = -CGFloat.pi / 4
         default:
             break
         }
         meleeAttack.position = position
+        meleeAttack.zPosition = -0.1
+
+        if let texture = meleeAttack.texture {
+            meleeAttack.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
+            meleeAttack.physicsBody?.isDynamic = false
+            meleeAttack.physicsBody?.categoryBitMask = CollisionBitMasks.melee
+            meleeAttack.physicsBody?.contactTestBitMask =
+                CollisionBitMasks.monster
+            meleeAttack.physicsBody?.collisionBitMask = 0
+        }
 
         self.spriteComponent.node.addChild(meleeAttack)
-        let wait = SKAction.wait(forDuration: 0.5)
+        let wait = SKAction.wait(forDuration: 0.2)
         let remove = SKAction.removeFromParent()
         meleeAttack.run(SKAction.sequence([wait, remove]))
     }
