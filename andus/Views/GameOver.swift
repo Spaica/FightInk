@@ -32,7 +32,7 @@ struct GameOver: View {
                         fontName: "Sentreno",
                         fontSize: titleFontSize,
                         strokeColor: .clear,
-                        fillColor: .white,git 
+                        fillColor: .white,
                         strokeWidth: 0.0
                     )
                 }.fixedSize()

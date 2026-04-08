@@ -11,7 +11,7 @@ import SpriteKit
 
 class Player: GKEntity {
     var spriteComponent = SpriteComponent(
-        texture: SKTexture(imageNamed: "player1")
+        texture: SKTexture(imageNamed: "player_idle_1")
     )
     var moving = (w: false, a: false, s: false, d: false)
     var hasAttacked: Bool = true
@@ -20,17 +20,29 @@ class Player: GKEntity {
     var attackValue: Float = 25
     var defense: Float = 10
 
-    private var playerAtlas: SKTextureAtlas {
-        return SKTextureAtlas(named: "Player")
-    }
+    private var walkAnimation: SKAction?
+    private var idleAnimation: SKAction?
 
-    private var playerTextures: [SKTexture] {
-        return [
+    func setupAnimations() {
+        let playerAtlas: SKTextureAtlas = SKTextureAtlas(named: "Player")
+        let walkTextures: [SKTexture] = [
             playerAtlas.textureNamed("player_walk_1"),
             playerAtlas.textureNamed("player_walk_2"),
             playerAtlas.textureNamed("player_walk_3"),
             playerAtlas.textureNamed("player_walk_4"),
         ]
+        let idleTextures: [SKTexture] = [
+            playerAtlas.textureNamed("player_idle_1"),
+            playerAtlas.textureNamed("player_idle_2"),
+        ]
+        self.walkAnimation = SKAction.animate(
+            with: walkTextures,
+            timePerFrame: 0.15
+        )
+        self.idleAnimation = SKAction.animate(
+            with: idleTextures,
+            timePerFrame: 0.35
+        )
     }
 
     override init() {
@@ -52,6 +64,11 @@ class Player: GKEntity {
         self.spriteComponent.node.setScale(0.08)
         self.spriteComponent.node.zPosition = 2
         self.spriteComponent.node.name = "player"
+
+        setupAnimations()
+        self.spriteComponent.node.run(
+            SKAction.repeatForever(self.idleAnimation!)
+        )
 
         addComponent(self.spriteComponent)
     }
@@ -75,19 +92,13 @@ class Player: GKEntity {
                 if self.spriteComponent.node.action(forKey: "walk")
                     == nil
                 {
-                    let walkAnimation = SKAction.animate(
-                        with: playerTextures,
-                        timePerFrame: 0.2
-                    )
-                    let repeatWalk = SKAction.repeatForever(walkAnimation)
                     self.spriteComponent.node.run(
-                        repeatWalk,
+                        SKAction.repeatForever(walkAnimation!),
                         withKey: "walk"
                     )
                 }
             } else {
                 self.spriteComponent.node.removeAction(forKey: "walk")
-                self.spriteComponent.node.texture = playerTextures[0]
             }
 
             if moving.w && moving.a {
