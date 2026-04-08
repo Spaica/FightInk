@@ -46,7 +46,7 @@ class Player: GKEntity {
     }
 
     func initBody() {
-        self.spriteComponent.node.physicsBody = .init(
+        self.spriteComponent.node.physicsBody = SKPhysicsBody(
             polygonFrom: CGPath(
                 ellipseIn: self.spriteComponent.node.frame,
                 transform: nil
@@ -64,11 +64,11 @@ class Player: GKEntity {
     override init() {
         super.init()
 
-        initBody()
-
         self.spriteComponent.node.setScale(0.08)
         self.spriteComponent.node.zPosition = 2
         self.spriteComponent.node.name = "player"
+
+        initBody()
 
         initAnimations()
         self.spriteComponent.node.run(
@@ -144,7 +144,10 @@ class Player: GKEntity {
         hasAttacked = true
 
         let range: CGFloat = 800
-        let melee = Melee(imageNamed: "melee_player")
+        let melee = Melee(
+            imageNamed: "melee_player",
+            contactTestBitMask: CollisionBitMasks.monster
+        )
         guard let meleeNode = melee.spriteComponent?.node else { return }
 
         switch self.lastDirection {

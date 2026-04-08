@@ -12,7 +12,7 @@ import SpriteKit
 class Melee: SKNode {
     var spriteComponent: SpriteComponent?
 
-    init(imageNamed: String) {
+    init(imageNamed: String, contactTestBitMask: UInt32) {
         super.init()
         self.spriteComponent = .init(texture: SKTexture(imageNamed: imageNamed))
         guard let spriteComponent else { return }
@@ -21,11 +21,18 @@ class Melee: SKNode {
 
         if let texture = node.texture {
             node.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
-            node.physicsBody?.isDynamic = false
-            node.physicsBody?.categoryBitMask = CollisionBitMasks.melee
-            node.physicsBody?.contactTestBitMask =
-                CollisionBitMasks.monster
-            node.physicsBody?.collisionBitMask = 0
+            guard let body = node.physicsBody else { return }
+            body.isDynamic = true
+            body.affectedByGravity = false
+            body.pinned = true
+            body.categoryBitMask = CollisionBitMasks.melee
+            body.contactTestBitMask = contactTestBitMask
+            body.collisionBitMask = 0
+
+            body.mass = 0
+            body.linearDamping = 0
+            body.angularDamping = 0
+            body.friction = 0
         }
     }
 

@@ -42,6 +42,8 @@ class Monster: GKEntity {
     init(at: CGPoint, range: CGFloat) {
         super.init()
 
+        initBody()
+
         let offset = CGPoint(
             x: .random(in: -range...range),
             y: .random(in: -range...range)
@@ -88,7 +90,10 @@ class Monster: GKEntity {
         hasAttacked = true
 
         let range: CGFloat = 50
-        let melee = Melee(imageNamed: "melee_monster")
+        let melee = Melee(
+            imageNamed: "melee_monster",
+            contactTestBitMask: CollisionBitMasks.player
+        )
         guard let meleeAttack = melee.spriteComponent?.node else { return }
         meleeAttack.name = "monsterMelee_\(self.spriteComponent.node.hash)"
         meleeAttack.setScale(0.06)
@@ -109,16 +114,6 @@ class Monster: GKEntity {
             y: position.y + sin(angle) * range
         )
         meleeAttack.zRotation = angle
-        meleeAttack.zPosition = -0.1
-
-        if let texture = meleeAttack.texture {
-            meleeAttack.physicsBody = SKPhysicsBody(rectangleOf: texture.size())
-            meleeAttack.physicsBody?.isDynamic = false
-            meleeAttack.physicsBody?.categoryBitMask = CollisionBitMasks.melee
-            meleeAttack.physicsBody?.contactTestBitMask =
-                CollisionBitMasks.player
-            meleeAttack.physicsBody?.collisionBitMask = 0
-        }
 
         scene.addChild(meleeAttack)
         let wait = SKAction.wait(forDuration: 0.2)
