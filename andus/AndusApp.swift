@@ -5,6 +5,7 @@
 //  Created by Adriano Oliviero on 30/03/26.
 //
 
+import AppKit
 import SpriteKit
 import SwiftUI
 
@@ -25,6 +26,7 @@ struct AndusApp: App {
                             set: { newValue in
                                 self.isGameOver = false
                                 self.shouldStartGame = newValue
+                                self.hudState.playerHealth = 100
                             }
                         )
                     )
@@ -43,16 +45,17 @@ struct AndusApp: App {
                                     s.hudState = hudState
                                     return s
                                 }(),
-                                debugOptions: [
-                                    .showsFPS, .showsNodeCount,
-                                    .showsPhysics, .showsFields,
-                                ]
+                                //                                debugOptions: [
+                                //                                    .showsFPS, .showsNodeCount,
+                                //                                    .showsPhysics, .showsFields,
+                                //                                ]
                             )
                         }
                         .focusable()
                         .focused(self.$isGameFocused)
                         .onAppear {
                             self.isGameFocused = true
+                            NSCursor.hide()
                         }
                         HUDView(hudState: hudState)
                     }

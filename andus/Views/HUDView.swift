@@ -29,6 +29,11 @@ struct HUDView: View {
                 Spacer()
             }
             Spacer()
-        }.ignoresSafeArea()
+        }
     }
+}
+
+#Preview {
+    Spacer()
+    HUDView(hudState: HUDState())
 }
