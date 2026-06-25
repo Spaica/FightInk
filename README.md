@@ -1,4 +1,4 @@
-# Andus
+# FightInk
 
 A roguelike game of an ink made hero that has to kill several hordes of monsters existing on the office table.
 
