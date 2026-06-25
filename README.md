@@ -16,3 +16,7 @@ A roguelike game of an ink made hero that has to kill several hordes of monsters
 *   [Swift](https://swift.org/) - Programming language
 *   [SpriteKit](https://developer.apple.com/spritekit/) - 2D game engine
 
+## Development team
+
+*   Andreina Costagliola
+*   Adriano Oliviero
